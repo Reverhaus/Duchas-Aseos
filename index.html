@@ -282,35 +282,52 @@
 
         const DAYS = ['L','M','X','J','V','S','D'];
         const DAY_MAP = ['D','L','M','X','J','V','S'];
-        const STORAGE_KEY = 'aseo_v1';
+        const STORAGE_KEY = 'aseo_progress_v2';
         
-        let func = 5, sort = 'priority', done = new Set(), poo = new Set();
+        let func = 5, sort = 'priority';
+        let allData = { done: {}, poo: {} };
 
         const $ = id => document.getElementById(id);
         const today = () => DAY_MAP[new Date().getDay()];
         const dateStr = () => { const d = new Date(); return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}`; };
 
-        function load() {
+        // Cargar TODOS los datos del localStorage
+        function loadAllData() {
             try {
-                const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-                done = new Set(data.done?.[func] || []);
-                poo = new Set(data.poo?.[func] || []);
-            } catch {}
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    allData = JSON.parse(saved);
+                    // Asegurar estructura
+                    if (!allData.done) allData.done = {};
+                    if (!allData.poo) allData.poo = {};
+                }
+            } catch (e) {
+                console.error('Error loading data:', e);
+                allData = { done: {}, poo: {} };
+            }
         }
 
-        function save() {
+        // Guardar TODOS los datos en localStorage
+        function saveAllData() {
             try {
-                const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{done:{},poo:{}}');
-                data.done = {...data.done, [func]: [...done]};
-                data.poo = {...data.poo, [func]: [...poo]};
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-            } catch {}
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+            } catch (e) {
+                console.error('Error saving data:', e);
+            }
         }
+
+        // Obtener sets para la función actual
+        function getDoneSet() { return new Set(allData.done[func] || []); }
+        function getPooSet() { return new Set(allData.poo[func] || []); }
+
+        // Establecer sets para la función actual
+        function setDoneSet(set) { allData.done[func] = [...set]; }
+        function setPooSet(set) { allData.poo[func] = [...set]; }
 
         function clearData() {
-            if (confirm('¿Borrar todo el progreso?')) {
+            if (confirm('¿Borrar TODO el progreso guardado?')) {
                 localStorage.removeItem(STORAGE_KEY);
-                done.clear(); poo.clear();
+                allData = { done: {}, poo: {} };
                 render();
             }
         }
@@ -322,13 +339,12 @@
 
         function createCard(p, isDone, day) {
             const showerToday = p.days.includes(day);
-            const hasPoo = poo.has(p.id);
+            const hasPoo = getPooSet().has(p.id);
             const badge = p.p === 1 ? '<div class="priority-badge">🔝</div>' : p.p === 2 ? '<div class="meal-badge">☕</div>' : '';
-            const glow = p.p === 1 ? 'priority-glow' : p.p === 2 ? 'meal-glow' : '';
             const emoji = p.p === 1 ? '🔝' : p.p === 2 ? '☕' : '';
             
             const div = document.createElement('div');
-            div.className = `bg-white p-2 rounded-lg flex items-center gap-2 card-shadow ${isDone ? 'completed-card' : ''} ${p.p === 1 ? 'priority-top' : p.p === 2 ? 'priority-meal' : 'priority-normal'} ${glow}`;
+            div.className = `bg-white p-2 rounded-lg flex items-center gap-2 card-shadow ${isDone ? 'completed-card' : ''} ${p.p === 1 ? 'priority-top' : p.p === 2 ? 'priority-meal' : 'priority-normal'}`;
             div.id = `card-${p.id}`;
             
             div.innerHTML = `
@@ -382,11 +398,14 @@
         function toggle(id, btn, e, type) {
             e.stopPropagation();
             const card = $('card-' + id);
+            const doneSet = getDoneSet();
+            const pooSet = getPooSet();
             
             if (type === 'done') {
-                if (done.has(id)) { done.delete(id); }
-                else {
-                    done.add(id);
+                if (doneSet.has(id)) { 
+                    doneSet.delete(id); 
+                } else {
+                    doneSet.add(id);
                     if (navigator.vibrate) navigator.vibrate([30,50,30]);
                     btn.classList.add('tick-btn-complete');
                     confetti(btn.getBoundingClientRect().left + 24, btn.getBoundingClientRect().top + 24);
@@ -394,19 +413,34 @@
                     card.classList.add('card-completing');
                     setTimeout(() => btn.classList.remove('tick-btn-complete'), 500);
                 }
+                setDoneSet(doneSet);
             } else {
-                poo.has(id) ? poo.delete(id) : (poo.add(id), btn.classList.add('poo-btn-active'), navigator.vibrate && navigator.vibrate(30));
+                if (pooSet.has(id)) { 
+                    pooSet.delete(id); 
+                } else {
+                    pooSet.add(id);
+                    btn.classList.add('poo-btn-active');
+                    if (navigator.vibrate) navigator.vibrate(30);
+                }
+                setPooSet(pooSet);
             }
-            save();
+            
+            saveAllData();
             render();
         }
 
         function setFunc(f) {
+            // Guardar estado actual antes de cambiar
+            saveAllData();
+            
+            // Cambiar función
             func = f;
-            load();
+            
+            // Actualizar botones
             [5,6,8,9].forEach(n => {
                 $('btn-'+n).className = `py-2 rounded-lg font-bold text-xs ${n===f?'btn-primary text-white ring-2 ring-yellow-300':'bg-gray-200 text-gray-600'} shadow`;
             });
+            
             render();
         }
 
@@ -421,8 +455,11 @@
         function render() {
             const day = today();
             const list = DB[func] || [];
-            const active = list.filter(p => !done.has(p.id));
-            const completed = list.filter(p => done.has(p.id));
+            const doneSet = getDoneSet();
+            const pooSet = getPooSet();
+            
+            const active = list.filter(p => !doneSet.has(p.id));
+            const completed = list.filter(p => doneSet.has(p.id));
 
             active.sort((a,b) => {
                 if (sort === 'priority') return a.p - b.p || a.room - b.room;
@@ -450,8 +487,14 @@
             $('progress-fill').style.width = pct + '%';
         }
 
+        // Guardar al cerrar la página
+        window.addEventListener('beforeunload', () => {
+            saveAllData();
+        });
+
+        // Init
         $('current-date').textContent = dateStr();
-        load();
+        loadAllData();
         render();
     </script>
 </body>
