@@ -3,78 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#cccc00">
-    <meta name="description" content="App para gestión de duchas y aseo de residentes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Aseo">
     <title>Gestión de Aseo - UCC/UAD</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
-    <link rel="icon" type="image/png" href="icons/icon-192.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
-        :root { --primary: #cccc00; --primary-dark: #b3b300; --orange: #f97316; --orange-dark: #ea580c; --green: #166534; --green-dark: #14532d; }
+        
+        :root {
+            --primary: #cccc00;
+            --primary-dark: #b3b300;
+            --orange: #f97316;
+            --orange-dark: #ea580c;
+            --green: #166534;
+            --green-dark: #14532d;
+        }
+        
         .card-shadow { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
-        .priority-top { border-left: 6px solid var(--orange); background: linear-gradient(90deg, rgba(249, 115, 22, 0.15) 0%, rgba(255,255,255,0.9) 100%); box-shadow: 0 2px 8px rgba(249, 115, 22, 0.2); }
-        .priority-meal { border-left: 6px solid var(--green); background: linear-gradient(90deg, rgba(22, 101, 52, 0.15) 0%, rgba(255,255,255,0.9) 100%); box-shadow: 0 2px 8px rgba(22, 101, 52, 0.2); }
+        
+        .priority-top { 
+            border-left: 6px solid var(--orange);
+            background: linear-gradient(90deg, rgba(249, 115, 22, 0.15) 0%, rgba(255,255,255,0.9) 100%);
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.2);
+        }
+        
+        .priority-meal { 
+            border-left: 6px solid var(--green);
+            background: linear-gradient(90deg, rgba(22, 101, 52, 0.15) 0%, rgba(255,255,255,0.9) 100%);
+            box-shadow: 0 2px 8px rgba(22, 101, 52, 0.2);
+        }
+        
         .priority-normal { border-left: 5px solid #d1d5db; background: #fff; }
         .completed-card { opacity: 0.35; filter: grayscale(100%); }
         .completed-card .poo-btn-active { filter: grayscale(0%); opacity: 1; }
         .completed-card .poo-btn-active .emoji-poo { filter: grayscale(0%); }
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .card-completing { animation: completeMove 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; pointer-events: none; }
-        @keyframes completeMove { 0% { transform: scale(1); opacity: 1; } 30% { transform: scale(0.95); opacity: 1; } 100% { transform: scale(0.8) translateY(300px); opacity: 0; } }
-        .flying-card { position: fixed; z-index: 1000; pointer-events: none; animation: flyDown 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        @keyframes flyDown { 0% { transform: scale(1) rotate(0deg); opacity: 1; } 100% { transform: scale(0.7) rotate(10deg); opacity: 0; } }
+        
+        .card-completing {
+            animation: completeMove 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            pointer-events: none;
+        }
+        
+        @keyframes completeMove {
+            0% { transform: scale(1); opacity: 1; }
+            30% { transform: scale(0.95); opacity: 1; }
+            100% { transform: scale(0.8) translateY(300px); opacity: 0; }
+        }
+        
+        .flying-card {
+            position: fixed;
+            z-index: 1000;
+            pointer-events: none;
+            animation: flyDown 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        @keyframes flyDown {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: scale(0.7) rotate(10deg); opacity: 0; }
+        }
+        
         .tick-btn-complete { animation: tickPulse 0.4s ease-out; }
-        @keyframes tickPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 40% { transform: scale(1.15); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0.3); } 100% { transform: scale(1); } }
-        .poo-btn-active { animation: pooPulse 0.4s ease-out; background: linear-gradient(135deg, #78350f, #451a03) !important; border-color: #451a03 !important; }
-        @keyframes pooPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(120, 53, 15, 0.7); } 40% { transform: scale(1.15); box-shadow: 0 0 0 15px rgba(120, 53, 15, 0.3); } 100% { transform: scale(1); } }
-        .confetti { position: fixed; width: 8px; height: 8px; background-color: var(--primary); animation: confettiFall 0.8s ease-out forwards; pointer-events: none; z-index: 1000; border-radius: 2px; }
-        @keyframes confettiFall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100px) rotate(720deg); opacity: 0; } }
+        @keyframes tickPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            40% { transform: scale(1.15); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0.3); }
+            100% { transform: scale(1); }
+        }
+        
+        .poo-btn-active {
+            animation: pooPulse 0.4s ease-out;
+            background: linear-gradient(135deg, #78350f, #451a03) !important;
+            border-color: #451a03 !important;
+        }
+        @keyframes pooPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(120, 53, 15, 0.7); }
+            40% { transform: scale(1.15); box-shadow: 0 0 0 15px rgba(120, 53, 15, 0.3); }
+            100% { transform: scale(1); }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            animation: confettiFall 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 1000;
+            border-radius: 2px;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100px) rotate(720deg); opacity: 0; }
+        }
+        
         .section-highlight { animation: sectionGlow 0.5s ease-out; }
-        @keyframes sectionGlow { 0%, 100% { background-color: transparent; } 50% { background-color: rgba(34, 197, 94, 0.3); } }
-        .priority-badge, .meal-badge { position: absolute; top: -6px; right: -6px; color: white; font-size: 9px; font-weight: 700; padding: 2px 5px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); animation: badgePulse 2s ease-in-out infinite; }
+        @keyframes sectionGlow {
+            0%, 100% { background-color: transparent; }
+            50% { background-color: rgba(34, 197, 94, 0.3); }
+        }
+        
+        .priority-badge, .meal-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 5px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            animation: badgePulse 2s ease-in-out infinite;
+        }
         .priority-badge { background: linear-gradient(135deg, var(--orange), var(--orange-dark)); }
         .meal-badge { background: linear-gradient(135deg, var(--green), var(--green-dark)); }
         @keyframes badgePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        .day-badge { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: 700; font-size: 9px; text-transform: uppercase; flex-shrink: 0; }
+        
+        .day-badge { 
+            width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+            border-radius: 4px; font-weight: 700; font-size: 9px; text-transform: uppercase; flex-shrink: 0;
+        }
         .day-has-shower-today { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
         .day-has-shower-other { background-color: #9ca3af; color: white; }
         .day-no-shower { background-color: #e5e7eb; color: #9ca3af; }
-        .room-badge { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; flex-shrink: 0; }
+        
+        .room-badge {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            flex-shrink: 0;
+        }
+        
         .emoji-icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1)); flex-shrink: 0; }
+        
         .check-btn { background: linear-gradient(135deg, #f3f4f6, #e5e7eb); border: 2px solid #d1d5db; }
         .check-btn-complete { background: linear-gradient(135deg, #22c55e, #16a34a); border-color: #16a34a; }
         .check-btn svg { color: #9ca3af; }
         .check-btn-complete svg { color: white; }
+        
         .poo-btn { background: linear-gradient(135deg, #f3f4f6, #e5e7eb); border: 2px solid #d1d5db; }
+        
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
         .btn-priority { background: linear-gradient(135deg, var(--orange), var(--orange-dark)); }
         .btn-meal { background: linear-gradient(135deg, var(--green), var(--green-dark)); }
+        
         .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
         .collapsible-content.open { max-height: 500px; }
         .rotate-icon { transition: transform 0.3s ease; }
         .rotate-icon.open { transform: rotate(180deg); }
-        .stats-bar-bg { position: absolute; top: 0; left: 0; height: 100%; background: linear-gradient(90deg, #22c55e, #16a34a); transition: width 0.5s ease-out; z-index: 1; }
+        
+        .stats-bar-bg {
+            position: absolute; top: 0; left: 0; height: 100%;
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            transition: width 0.5s ease-out; z-index: 1;
+        }
+        
         .header-compact { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
         .header-title { font-size: 14px; font-weight: 900; white-space: nowrap; }
         .header-toggle-btn { padding: 5px 6px; font-size: 10px; white-space: nowrap; }
-        .clear-data-btn { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 5px 7px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
-        .install-banner { background: linear-gradient(135deg, #cccc00, #b3b300); color: white; padding: 12px; text-align: center; font-weight: 700; display: none; }
-        .install-banner button { background: white; color: #b3b300; border: none; padding: 6px 16px; border-radius: 20px; font-weight: 700; margin-left: 10px; cursor: pointer; }
+        .clear-data-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none;
+            padding: 5px 7px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 h-screen flex flex-col overflow-hidden">
-
-    <!-- Install Banner -->
-    <div id="install-banner" class="install-banner">
-        📱 Instalar app <button onclick="installPWA()">Instalar</button> <button onclick="this.parentElement.style.display='none'" style="background:transparent;color:white;margin-left:5px;">✕</button>
-    </div>
 
     <header class="bg-white shadow-md p-2 z-10 flex-shrink-0">
         <div class="header-compact mb-1">
@@ -136,58 +227,20 @@
     </footer>
 
     <script>
-        const DB = {
-            5: [
-                {id:'5-201-1',room:'201',name:'MARISA RODRIGUEZ',days:['L','X','V'],p:3},
-                {id:'5-202-1',room:'202',name:'ALICIA GIMENEZ',days:['L','X','V','D'],p:1},
-                {id:'5-202-2',room:'202',name:'DOLORES ONTENIENTE',days:['M','J','S'],p:2},
-                {id:'5-204-1',room:'204',name:'FILOMENA SAEZ',days:['L','X','V'],p:3},
-                {id:'5-204-2',room:'204',name:'LUCIA ROZAS',days:['M','J','S'],p:2},
-                {id:'5-203-1',room:'203',name:'ANTONIA HERNANDEZ',days:['M','J','S'],p:3},
-                {id:'5-208-1',room:'208',name:'VICENTA BLASCO',days:['L','X','V'],p:2},
-                {id:'5-208-2',room:'208',name:'ISABEL SANCHEZ',days:['L','X','V'],p:3},
-            ],
-            6: [
-                {id:'6-201-1',room:'201',name:'INGER BRUCKSCHEN',days:['M','J','S'],p:3},
-                {id:'6-206-1',room:'206',name:'GUDRUM VICENT',days:['L','X','V'],p:3},
-                {id:'6-206-2',room:'206',name:'MARÍA LUISE GREIN',days:['M','J','S'],p:3},
-                {id:'6-207-1',room:'207',name:'ELENA DÍAZ',days:['L','X','V'],p:3},
-                {id:'6-209-1',room:'209',name:'FERNANDO BARROSO',days:['M','J','S'],p:3},
-                {id:'6-209-2',room:'209',name:'MARTIN ROY',days:['L','X','V'],p:3},
-                {id:'6-211-1',room:'211',name:'JOSEFA GARCIA',days:['M','J','S'],p:3},
-                {id:'6-211-2',room:'211',name:'MANUELA GARCIA',days:['L','X','V'],p:3},
-            ],
-            8: [
-                {id:'8-205-1',room:'205',name:'FERNANDO ROMÁN',days:['M','X','V'],p:3},
-                {id:'8-205-2',room:'205',name:'LUIS LÁZARO',days:['L','M','V'],p:2},
-                {id:'8-207-1',room:'207',name:'TERESA CANO',days:['L','M','X'],p:3},
-                {id:'8-222-1',room:'222',name:'JOSEFA GUILLEN',days:['M','X','V'],p:3},
-                {id:'8-210-1',room:'210',name:'FERNANDA DE MIGUEL',days:['L','M','X'],p:2},
-                {id:'8-210-2',room:'210',name:'PILAR MARCOS',days:['M','X','V'],p:2},
-                {id:'8-220-1',room:'220',name:'CARMEN TORRES',days:['L','M','X'],p:3},
-                {id:'8-212-1',room:'212',name:'CARMEN BELCHI',days:['M','X','V'],p:3},
-                {id:'8-213-1',room:'213',name:'ROSA BELLO',days:['L','M','X'],p:3},
-                {id:'8-213-2',room:'213',name:'CARMEN CRESPO',days:['M','X','V'],p:3},
-                {id:'8-214-1',room:'214',name:'CRUZ JIMENEZ',days:['L','M','X'],p:3},
-                {id:'8-216-1',room:'216',name:'FRANCISCO MARTINEZ',days:['L','M','X'],p:1},
-                {id:'8-214-2',room:'214',name:'GILLIAM KING',days:['M','X','V'],p:3},
-            ],
-            9: [
-                {id:'9-215-1',room:'215',name:'BRUCE GAUNTLET',days:['M','J','S'],p:3},
-                {id:'9-215-2',room:'215',name:'JESUS MONTERO',days:['L','X','V'],p:3},
-                {id:'9-217-1',room:'217',name:'LEONOR ESPIN',days:['L','X','V'],p:3},
-                {id:'9-217-2',room:'217',name:'MARI PAZ MOURIÑO',days:['M','J','S'],p:3},
-                {id:'9-218-1',room:'218',name:'JOANES JODOCUS',days:['J','V','D'],p:3},
-                {id:'9-218-2',room:'218',name:'EMILIANO RUIZ',days:['L','X','V'],p:3},
-                {id:'9-219-1',room:'219',name:'VICENTE ALBADALEJO',days:['L','X','V'],p:3},
-                {id:'9-221-1',room:'221',name:'ESTEBAN VERDÚ',days:['M','J','S'],p:1},
-                {id:'9-223-1',room:'223',name:'M. CARMEN DOMINGUEZ',days:['M','J','S'],p:1},
-                {id:'9-225-1',room:'225',name:'CELEDONIO PACHECO',days:['M','S'],p:2},
-                {id:'9-225-2',room:'225',name:'MANUEL ESCOLANO',days:['M','S'],p:2},
-                {id:'9-221-2',room:'221',name:'MARCELO VICENTE',days:['L','X','V','D'],p:3},
-                {id:'9-227-1',room:'227',name:'MONCHI MARTINEZ',days:['L','X','V'],p:2},
-            ]
-        };
+        let DB = {};
+
+// Cargar residentes desde JSON
+async function loadResidents() {
+    try {
+        const basePath = window.location.pathname.includes('Duchas-Aseos') ? '/Duchas-Aseos' : '';
+        const response = await fetch(basePath + '/residentes.json');
+        DB = await response.json();
+        render();
+    } catch (error) {
+        console.error('Error cargando residentes:', error);
+        alert('Error cargando la lista de residentes');
+    }
+}
 
         const DAYS = ['L','M','X','J','V','S','D'];
         const DAY_MAP = ['D','L','M','X','J','V','S'];
@@ -195,29 +248,41 @@
         
         let func = 5, sort = 'priority';
         let allData = { done: {}, poo: {} };
-        let deferredPrompt = null;
 
         const $ = id => document.getElementById(id);
         const today = () => DAY_MAP[new Date().getDay()];
         const dateStr = () => { const d = new Date(); return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}`; };
 
+        // Cargar TODOS los datos del localStorage
         function loadAllData() {
             try {
                 const saved = localStorage.getItem(STORAGE_KEY);
                 if (saved) {
                     allData = JSON.parse(saved);
+                    // Asegurar estructura
                     if (!allData.done) allData.done = {};
                     if (!allData.poo) allData.poo = {};
                 }
-            } catch (e) { allData = { done: {}, poo: {} }; }
+            } catch (e) {
+                console.error('Error loading data:', e);
+                allData = { done: {}, poo: {} };
+            }
         }
 
+        // Guardar TODOS los datos en localStorage
         function saveAllData() {
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(allData)); } catch (e) {}
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+            } catch (e) {
+                console.error('Error saving data:', e);
+            }
         }
 
+        // Obtener sets para la función actual
         function getDoneSet() { return new Set(allData.done[func] || []); }
         function getPooSet() { return new Set(allData.poo[func] || []); }
+
+        // Establecer sets para la función actual
         function setDoneSet(set) { allData.done[func] = [...set]; }
         function setPooSet(set) { allData.poo[func] = [...set]; }
 
@@ -271,10 +336,12 @@
             clone.className = 'flying-card';
             clone.style.cssText = `left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;height:${rect.height}px`;
             document.body.appendChild(clone);
+            
             clone.animate([
                 {transform:'scale(1) rotate(0deg)',opacity:1},
                 {transform:`translate(${target.left-rect.left+target.width/2-rect.width/2}px,${target.top-rect.top+20}px) scale(0.7) rotate(10deg)`,opacity:0}
             ], {duration:600,easing:'cubic-bezier(0.4,0,0.2,1)'}).onfinish = () => clone.remove();
+            
             $('completed-section').classList.add('section-highlight');
             setTimeout(() => $('completed-section').classList.remove('section-highlight'), 500);
         }
@@ -297,8 +364,9 @@
             const pooSet = getPooSet();
             
             if (type === 'done') {
-                if (doneSet.has(id)) { doneSet.delete(id); } 
-                else {
+                if (doneSet.has(id)) { 
+                    doneSet.delete(id); 
+                } else {
                     doneSet.add(id);
                     if (navigator.vibrate) navigator.vibrate([30,50,30]);
                     btn.classList.add('tick-btn-complete');
@@ -309,24 +377,32 @@
                 }
                 setDoneSet(doneSet);
             } else {
-                if (pooSet.has(id)) { pooSet.delete(id); } 
-                else {
+                if (pooSet.has(id)) { 
+                    pooSet.delete(id); 
+                } else {
                     pooSet.add(id);
                     btn.classList.add('poo-btn-active');
                     if (navigator.vibrate) navigator.vibrate(30);
                 }
                 setPooSet(pooSet);
             }
+            
             saveAllData();
             render();
         }
 
         function setFunc(f) {
+            // Guardar estado actual antes de cambiar
             saveAllData();
+            
+            // Cambiar función
             func = f;
+            
+            // Actualizar botones
             [5,6,8,9].forEach(n => {
                 $('btn-'+n).className = `py-2 rounded-lg font-bold text-xs ${n===f?'btn-primary text-white ring-2 ring-yellow-300':'bg-gray-200 text-gray-600'} shadow`;
             });
+            
             render();
         }
 
@@ -343,6 +419,7 @@
             const list = DB[func] || [];
             const doneSet = getDoneSet();
             const pooSet = getPooSet();
+            
             const active = list.filter(p => !doneSet.has(p.id));
             const completed = list.filter(p => doneSet.has(p.id));
 
@@ -363,43 +440,21 @@
             if (completed.length) {
                 compSection.classList.remove('hidden');
                 $('completed-list').innerHTML = completed.map(p => createCard(p,true,day).outerHTML).join('');
-            } else { compSection.classList.add('hidden'); }
+            } else {
+                compSection.classList.add('hidden');
+            }
 
             const pct = list.length ? Math.round(completed.length / list.length * 100) : 0;
             $('stats-text').textContent = `${completed.length}/${list.length} (${pct}%)`;
             $('progress-fill').style.width = pct + '%';
         }
 
-        // PWA Install
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            $('install-banner').style.display = 'block';
+        // Guardar al cerrar la página
+        window.addEventListener('beforeunload', () => {
+            saveAllData();
         });
 
-        function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choice) => {
-                    if (choice.outcome === 'accepted') {
-                        $('install-banner').style.display = 'none';
-                    }
-                    deferredPrompt = null;
-                });
-            }
-        }
-
-        // Service Worker
-        if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/Duchas-Aseos/sw.js')
-            .then(reg => console.log('SW registrado:', reg.scope))
-            .catch(err => console.log('SW error:', err));
-    });
-}
-
-        window.addEventListener('beforeunload', () => { saveAllData(); });
-
+        // Init
         $('current-date').textContent = dateStr();
         loadAllData();
         render();
