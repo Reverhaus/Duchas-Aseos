@@ -1,0 +1,52 @@
+{
+  "5": [
+    {"id":"5-201-1","room":"201","name":"MARISA RODRIGUEZ","days":["L","X","V"],"p":3},
+    {"id":"5-202-1","room":"202","name":"ALICIA GIMENEZ","days":["L","X","V","D"],"p":1},
+    {"id":"5-202-2","room":"202","name":"DOLORES ONTENIENTE","days":["M","J","S"],"p":2},
+    {"id":"5-204-1","room":"204","name":"FILOMENA SAEZ","days":["L","X","V"],"p":3},
+    {"id":"5-204-2","room":"204","name":"LUCIA ROZAS","days":["M","J","S"],"p":2},
+    {"id":"5-203-1","room":"203","name":"ANTONIA HERNANDEZ","days":["M","J","S"],"p":3},
+    {"id":"5-208-1","room":"208","name":"VICENTA BLASCO","days":["L","X","V"],"p":2},
+    {"id":"5-208-2","room":"208","name":"ISABEL SANCHEZ","days":["L","X","V"],"p":3}
+  ],
+  "6": [
+    {"id":"6-201-1","room":"201","name":"INGER BRUCKSCHEN","days":["M","J","S"],"p":3},
+    {"id":"6-206-1","room":"206","name":"GUDRUM VICENT","days":["L","X","V"],"p":3},
+    {"id":"6-206-2","room":"206","name":"MARÍA LUISE GREIN","days":["M","J","S"],"p":3},
+    {"id":"6-207-1","room":"207","name":"ELENA DÍAZ","days":["L","X","V"],"p":3},
+    {"id":"6-209-1","room":"209","name":"FERNANDO BARROSO","days":["M","J","S"],"p":3},
+    {"id":"6-209-2","room":"209","name":"MARTIN ROY","days":["L","X","V"],"p":3},
+    {"id":"6-211-1","room":"211","name":"JOSEFA GARCIA","days":["M","J","S"],"p":3},
+    {"id":"6-211-2","room":"211","name":"MANUELA GARCIA","days":["L","X","V"],"p":3}
+  ],
+  "8": [
+    {"id":"8-205-1","room":"205","name":"FERNANDO ROMÁN","days":["M","X","V"],"p":3},
+    {"id":"8-205-2","room":"205","name":"LUIS LÁZARO","days":["L","M","V"],"p":2},
+    {"id":"8-207-1","room":"207","name":"TERESA CANO","days":["L","M","X"],"p":3},
+    {"id":"8-222-1","room":"222","name":"JOSEFA GUILLEN","days":["M","X","V"],"p":3},
+    {"id":"8-210-1","room":"210","name":"FERNANDA DE MIGUEL","days":["L","M","X"],"p":2},
+    {"id":"8-210-2","room":"210","name":"PILAR MARCOS","days":["M","X","V"],"p":2},
+    {"id":"8-220-1","room":"220","name":"CARMEN TORRES","days":["L","M","X"],"p":3},
+    {"id":"8-212-1","room":"212","name":"CARMEN BELCHI","days":["M","X","V"],"p":3},
+    {"id":"8-213-1","room":"213","name":"ROSA BELLO","days":["L","M","X"],"p":3},
+    {"id":"8-213-2","room":"213","name":"CARMEN CRESPO","days":["M","X","V"],"p":3},
+    {"id":"8-214-1","room":"214","name":"CRUZ JIMENEZ","days":["L","M","X"],"p":3},
+    {"id":"8-216-1","room":"216","name":"FRANCISCO MARTINEZ","days":["L","M","X"],"p":1},
+    {"id":"8-214-2","room":"214","name":"GILLIAM KING","days":["M","X","V"],"p":3}
+  ],
+  "9": [
+    {"id":"9-215-1","room":"215","name":"BRUCE GAUNTLET","days":["M","J","S"],"p":3},
+    {"id":"9-215-2","room":"215","name":"JESUS MONTERO","days":["L","X","V"],"p":3},
+    {"id":"9-217-1","room":"217","name":"LEONOR ESPIN","days":["L","X","V"],"p":3},
+    {"id":"9-217-2","room":"217","name":"MARI PAZ MOURIÑO","days":["M","J","S"],"p":3},
+    {"id":"9-218-1","room":"218","name":"JOANES JODOCUS","days":["J","V","D"],"p":3},
+    {"id":"9-218-2","room":"218","name":"EMILIANO RUIZ","days":["L","X","V"],"p":3},
+    {"id":"9-219-1","room":"219","name":"VICENTE ALBADALEJO","days":["L","X","V"],"p":3},
+    {"id":"9-221-1","room":"221","name":"ESTEBAN VERDÚ","days":["M","J","S"],"p":1},
+    {"id":"9-223-1","room":"223","name":"M. CARMEN DOMINGUEZ","days":["M","J","S"],"p":1},
+    {"id":"9-225-1","room":"225","name":"CELEDONIO PACHECO","days":["M","S"],"p":2},
+    {"id":"9-225-2","room":"225","name":"MANUEL ESCOLANO","days":["M","S"],"p":2},
+    {"id":"9-221-2","room":"221","name":"MARCELO VICENTE","days":["L","X","V","D"],"p":3},
+    {"id":"9-227-1","room":"227","name":"MONCHI MARTINEZ","days":["L","X","V"],"p":2}
+  ]
+}
