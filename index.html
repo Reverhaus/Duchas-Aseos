@@ -235,7 +235,7 @@ async function loadResidents() {
         const basePath = window.location.pathname.includes('Duchas-Aseos') ? '/Duchas-Aseos' : '';
         const response = await fetch(basePath + '/residentes.json');
         DB = await response.json();
-        render();
+        loadResidents();
     } catch (error) {
         console.error('Error cargando residentes:', error);
         alert('Error cargando la lista de residentes');
@@ -461,6 +461,7 @@ async function loadResidents() {
     </script>
 </body>
 </html>
+
 
 
 
