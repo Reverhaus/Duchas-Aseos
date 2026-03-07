@@ -14,13 +14,382 @@
     <link rel="icon" type="image/png" href="icons/icon-192.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <!-- ... resto del CSS ... -->
+    <style>
+        body { font-family: 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
+        :root { --primary: #cccc00; --primary-dark: #b3b300; --orange: #f97316; --orange-dark: #ea580c; --green: #166534; --green-dark: #14532d; }
+        .card-shadow { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
+        .priority-top { border-left: 6px solid var(--orange); background: linear-gradient(90deg, rgba(249, 115, 22, 0.15) 0%, rgba(255,255,255,0.9) 100%); box-shadow: 0 2px 8px rgba(249, 115, 22, 0.2); }
+        .priority-meal { border-left: 6px solid var(--green); background: linear-gradient(90deg, rgba(22, 101, 52, 0.15) 0%, rgba(255,255,255,0.9) 100%); box-shadow: 0 2px 8px rgba(22, 101, 52, 0.2); }
+        .priority-normal { border-left: 5px solid #d1d5db; background: #fff; }
+        .completed-card { opacity: 0.35; filter: grayscale(100%); }
+        .completed-card .poo-btn-active { filter: grayscale(0%); opacity: 1; }
+        .completed-card .poo-btn-active .emoji-poo { filter: grayscale(0%); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .card-completing { animation: completeMove 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; pointer-events: none; }
+        @keyframes completeMove { 0% { transform: scale(1); opacity: 1; } 30% { transform: scale(0.95); opacity: 1; } 100% { transform: scale(0.8) translateY(300px); opacity: 0; } }
+        .flying-card { position: fixed; z-index: 1000; pointer-events: none; animation: flyDown 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        @keyframes flyDown { 0% { transform: scale(1) rotate(0deg); opacity: 1; } 100% { transform: scale(0.7) rotate(10deg); opacity: 0; } }
+        .tick-btn-complete { animation: tickPulse 0.4s ease-out; }
+        @keyframes tickPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 40% { transform: scale(1.15); box-shadow: 0 0 0 15px rgba(34, 197, 94, 0.3); } 100% { transform: scale(1); } }
+        .poo-btn-active { animation: pooPulse 0.4s ease-out; background: linear-gradient(135deg, #78350f, #451a03) !important; border-color: #451a03 !important; }
+        @keyframes pooPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(120, 53, 15, 0.7); } 40% { transform: scale(1.15); box-shadow: 0 0 0 15px rgba(120, 53, 15, 0.3); } 100% { transform: scale(1); } }
+        .confetti { position: fixed; width: 8px; height: 8px; background-color: var(--primary); animation: confettiFall 0.8s ease-out forwards; pointer-events: none; z-index: 1000; border-radius: 2px; }
+        @keyframes confettiFall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100px) rotate(720deg); opacity: 0; } }
+        .section-highlight { animation: sectionGlow 0.5s ease-out; }
+        @keyframes sectionGlow { 0%, 100% { background-color: transparent; } 50% { background-color: rgba(34, 197, 94, 0.3); } }
+        .priority-badge, .meal-badge { position: absolute; top: -6px; right: -6px; color: white; font-size: 9px; font-weight: 700; padding: 2px 5px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); animation: badgePulse 2s ease-in-out infinite; }
+        .priority-badge { background: linear-gradient(135deg, var(--orange), var(--orange-dark)); }
+        .meal-badge { background: linear-gradient(135deg, var(--green), var(--green-dark)); }
+        @keyframes badgePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .day-badge { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: 700; font-size: 9px; text-transform: uppercase; flex-shrink: 0; }
+        .day-has-shower-today { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+        .day-has-shower-other { background-color: #9ca3af; color: white; }
+        .day-no-shower { background-color: #e5e7eb; color: #9ca3af; }
+        .room-badge { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; flex-shrink: 0; }
+        .emoji-icon { font-size: 24px; line-height: 1; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1)); flex-shrink: 0; }
+        .check-btn { background: linear-gradient(135deg, #f3f4f6, #e5e7eb); border: 2px solid #d1d5db; }
+        .check-btn-complete { background: linear-gradient(135deg, #22c55e, #16a34a); border-color: #16a34a; }
+        .check-btn svg { color: #9ca3af; }
+        .check-btn-complete svg { color: white; }
+        .poo-btn { background: linear-gradient(135deg, #f3f4f6, #e5e7eb); border: 2px solid #d1d5db; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+        .btn-priority { background: linear-gradient(135deg, var(--orange), var(--orange-dark)); }
+        .btn-meal { background: linear-gradient(135deg, var(--green), var(--green-dark)); }
+        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .collapsible-content.open { max-height: 500px; }
+        .rotate-icon { transition: transform 0.3s ease; }
+        .rotate-icon.open { transform: rotate(180deg); }
+        .stats-bar-bg { position: absolute; top: 0; left: 0; height: 100%; background: linear-gradient(90deg, #22c55e, #16a34a); transition: width 0.5s ease-out; z-index: 1; }
+        .header-compact { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
+        .header-title { font-size: 14px; font-weight: 900; white-space: nowrap; }
+        .header-toggle-btn { padding: 5px 6px; font-size: 10px; white-space: nowrap; }
+        .clear-data-btn { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 5px 7px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; }
+        .install-banner { background: linear-gradient(135deg, #cccc00, #b3b300); color: white; padding: 12px; text-align: center; font-weight: 700; display: none; }
+        .install-banner button { background: white; color: #b3b300; border: none; padding: 6px 16px; border-radius: 20px; font-weight: 700; margin-left: 10px; cursor: pointer; }
+    </style>
 </head>
-<body>
-    <!-- ... todo tu contenido HTML ... -->
-    
+<body class="bg-gray-100 text-gray-800 h-screen flex flex-col overflow-hidden">
+
+    <!-- Install Banner -->
+    <div id="install-banner" class="install-banner">
+        📱 Instalar app <button onclick="installPWA()">Instalar</button> <button onclick="this.parentElement.style.display='none'" style="background:transparent;color:white;margin-left:5px;">✕</button>
+    </div>
+
+    <header class="bg-white shadow-md p-2 z-10 flex-shrink-0">
+        <div class="header-compact mb-1">
+            <h1 class="header-title text-gray-700 uppercase">🚿 Aseo</h1>
+            <div id="current-date" class="text-[9px] font-bold text-yellow-700 bg-yellow-50 px-1.5 py-0.5 rounded"></div>
+            <button onclick="toggleMenu('function-menu')" class="header-toggle-btn flex-1 rounded-lg font-bold text-xs bg-gray-100 text-gray-700 shadow flex items-center justify-center gap-1">
+                <span>📋 FUNCIONES</span><svg class="w-2.5 h-2.5 rotate-icon" id="icon-function" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <button onclick="toggleMenu('sort-menu')" class="header-toggle-btn flex-1 rounded-lg font-bold text-xs bg-gray-100 text-gray-700 shadow flex items-center justify-center gap-1">
+                <span>📥 ORDENAR</span><svg class="w-2.5 h-2.5 rotate-icon" id="icon-sort" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <button onclick="clearData()" class="clear-data-btn" title="Borrar datos">🗑️</button>
+        </div>
+        
+        <div id="function-menu" class="collapsible-content open">
+            <div class="grid grid-cols-4 gap-1 pt-1 pb-1">
+                <button onclick="setFunc(5)" id="btn-5" class="py-2 rounded-lg font-bold text-xs btn-primary text-white shadow">F5<br><span class="text-[8px]">UCC</span></button>
+                <button onclick="setFunc(6)" id="btn-6" class="py-2 rounded-lg font-bold text-xs bg-gray-200 text-gray-600 shadow">F6<br><span class="text-[8px]">UCC</span></button>
+                <button onclick="setFunc(8)" id="btn-8" class="py-2 rounded-lg font-bold text-xs bg-gray-200 text-gray-600 shadow">F8<br><span class="text-[8px]">UAD</span></button>
+                <button onclick="setFunc(9)" id="btn-9" class="py-2 rounded-lg font-bold text-xs bg-gray-200 text-gray-600 shadow">F9<br><span class="text-[8px]">UAD</span></button>
+            </div>
+        </div>
+
+        <div id="sort-menu" class="collapsible-content">
+            <div class="grid grid-cols-4 gap-1 pt-1 pb-1">
+                <button onclick="setSort('priority')" id="sort-priority" class="bg-yellow-100 text-yellow-800 py-2 rounded-lg border-2 border-yellow-300 font-bold text-xs">🔝 Prior.</button>
+                <button onclick="setSort('shower')" id="sort-shower" class="bg-white text-gray-600 py-2 rounded-lg border-2 border-gray-200 font-bold text-xs">🚿 Ducha</button>
+                <button onclick="setSort('room')" id="sort-room" class="bg-white text-gray-600 py-2 rounded-lg border-2 border-gray-200 font-bold text-xs">🏠 Habit.</button>
+                <button onclick="setSort('alpha')" id="sort-alpha" class="bg-white text-gray-600 py-2 rounded-lg border-2 border-gray-200 font-bold text-xs">🔤 A-Z</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="bg-gray-50 px-2 py-1 flex gap-2 text-[9px] flex-shrink-0 flex-wrap items-center">
+        <span class="font-bold text-gray-500">LEYENDA:</span>
+        <span class="btn-priority px-1 py-0.5 rounded text-white text-[8px]">🔝 Prior.</span>
+        <span class="btn-meal px-1 py-0.5 rounded text-white text-[8px]">☕ Desay.</span>
+        <span class="day-badge day-has-shower-today">V</span><span>Hoy</span>
+        <span class="day-badge day-has-shower-other">X</span><span>Ducha</span>
+    </div>
+
+    <main class="flex-1 overflow-y-auto p-2 pb-24 scroll-smooth no-scrollbar" id="main-scroll">
+        <div id="active-list" class="space-y-1"></div>
+        <div id="completed-section" class="mt-4 hidden">
+            <h3 class="text-gray-400 font-bold uppercase text-[9px] mb-1 border-b border-gray-300 pb-1">✅ Completados</h3>
+            <div id="completed-list" class="space-y-1"></div>
+        </div>
+    </main>
+
+    <footer class="fixed bottom-0 w-full z-20">
+        <div class="bg-white/95 backdrop-blur border-t px-2 py-1 flex justify-center gap-3 text-[9px]">
+            <div class="flex items-center gap-1"><div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center"><svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div><span>Aseo OK</span></div>
+            <div class="flex items-center gap-1"><div class="w-5 h-5 rounded-full bg-amber-700 flex items-center justify-center text-xs">💩</div><span>Depos.</span></div>
+        </div>
+        <div class="relative bg-gradient-to-r from-[#d4d400] to-[#a3a300]">
+            <div id="progress-fill" class="stats-bar-bg" style="width: 0%"></div>
+            <div class="relative z-2 py-2.5 text-center text-white font-bold text-xs" id="stats-text">0 / 0</div>
+        </div>
+    </footer>
+
     <script>
-        // Registrar Service Worker
+        const DB = {
+            5: [
+                {id:'5-201-1',room:'201',name:'MARISA RODRIGUEZ',days:['L','X','V'],p:3},
+                {id:'5-202-1',room:'202',name:'ALICIA GIMENEZ',days:['L','X','V','D'],p:1},
+                {id:'5-202-2',room:'202',name:'DOLORES ONTENIENTE',days:['M','J','S'],p:2},
+                {id:'5-204-1',room:'204',name:'FILOMENA SAEZ',days:['L','X','V'],p:3},
+                {id:'5-204-2',room:'204',name:'LUCIA ROZAS',days:['M','J','S'],p:2},
+                {id:'5-203-1',room:'203',name:'ANTONIA HERNANDEZ',days:['M','J','S'],p:3},
+                {id:'5-208-1',room:'208',name:'VICENTA BLASCO',days:['L','X','V'],p:2},
+                {id:'5-208-2',room:'208',name:'ISABEL SANCHEZ',days:['L','X','V'],p:3},
+            ],
+            6: [
+                {id:'6-201-1',room:'201',name:'INGER BRUCKSCHEN',days:['M','J','S'],p:3},
+                {id:'6-206-1',room:'206',name:'GUDRUM VICENT',days:['L','X','V'],p:3},
+                {id:'6-206-2',room:'206',name:'MARÍA LUISE GREIN',days:['M','J','S'],p:3},
+                {id:'6-207-1',room:'207',name:'ELENA DÍAZ',days:['L','X','V'],p:3},
+                {id:'6-209-1',room:'209',name:'FERNANDO BARROSO',days:['M','J','S'],p:3},
+                {id:'6-209-2',room:'209',name:'MARTIN ROY',days:['L','X','V'],p:3},
+                {id:'6-211-1',room:'211',name:'JOSEFA GARCIA',days:['M','J','S'],p:3},
+                {id:'6-211-2',room:'211',name:'MANUELA GARCIA',days:['L','X','V'],p:3},
+            ],
+            8: [
+                {id:'8-205-1',room:'205',name:'FERNANDO ROMÁN',days:['M','X','V'],p:3},
+                {id:'8-205-2',room:'205',name:'LUIS LÁZARO',days:['L','M','V'],p:2},
+                {id:'8-207-1',room:'207',name:'TERESA CANO',days:['L','M','X'],p:3},
+                {id:'8-222-1',room:'222',name:'JOSEFA GUILLEN',days:['M','X','V'],p:3},
+                {id:'8-210-1',room:'210',name:'FERNANDA DE MIGUEL',days:['L','M','X'],p:2},
+                {id:'8-210-2',room:'210',name:'PILAR MARCOS',days:['M','X','V'],p:2},
+                {id:'8-220-1',room:'220',name:'CARMEN TORRES',days:['L','M','X'],p:3},
+                {id:'8-212-1',room:'212',name:'CARMEN BELCHI',days:['M','X','V'],p:3},
+                {id:'8-213-1',room:'213',name:'ROSA BELLO',days:['L','M','X'],p:3},
+                {id:'8-213-2',room:'213',name:'CARMEN CRESPO',days:['M','X','V'],p:3},
+                {id:'8-214-1',room:'214',name:'CRUZ JIMENEZ',days:['L','M','X'],p:3},
+                {id:'8-216-1',room:'216',name:'FRANCISCO MARTINEZ',days:['L','M','X'],p:1},
+                {id:'8-214-2',room:'214',name:'GILLIAM KING',days:['M','X','V'],p:3},
+            ],
+            9: [
+                {id:'9-215-1',room:'215',name:'BRUCE GAUNTLET',days:['M','J','S'],p:3},
+                {id:'9-215-2',room:'215',name:'JESUS MONTERO',days:['L','X','V'],p:3},
+                {id:'9-217-1',room:'217',name:'LEONOR ESPIN',days:['L','X','V'],p:3},
+                {id:'9-217-2',room:'217',name:'MARI PAZ MOURIÑO',days:['M','J','S'],p:3},
+                {id:'9-218-1',room:'218',name:'JOANES JODOCUS',days:['J','V','D'],p:3},
+                {id:'9-218-2',room:'218',name:'EMILIANO RUIZ',days:['L','X','V'],p:3},
+                {id:'9-219-1',room:'219',name:'VICENTE ALBADALEJO',days:['L','X','V'],p:3},
+                {id:'9-221-1',room:'221',name:'ESTEBAN VERDÚ',days:['M','J','S'],p:1},
+                {id:'9-223-1',room:'223',name:'M. CARMEN DOMINGUEZ',days:['M','J','S'],p:1},
+                {id:'9-225-1',room:'225',name:'CELEDONIO PACHECO',days:['M','S'],p:2},
+                {id:'9-225-2',room:'225',name:'MANUEL ESCOLANO',days:['M','S'],p:2},
+                {id:'9-221-2',room:'221',name:'MARCELO VICENTE',days:['L','X','V','D'],p:3},
+                {id:'9-227-1',room:'227',name:'MONCHI MARTINEZ',days:['L','X','V'],p:2},
+            ]
+        };
+
+        const DAYS = ['L','M','X','J','V','S','D'];
+        const DAY_MAP = ['D','L','M','X','J','V','S'];
+        const STORAGE_KEY = 'aseo_progress_v2';
+        
+        let func = 5, sort = 'priority';
+        let allData = { done: {}, poo: {} };
+        let deferredPrompt = null;
+
+        const $ = id => document.getElementById(id);
+        const today = () => DAY_MAP[new Date().getDay()];
+        const dateStr = () => { const d = new Date(); return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}`; };
+
+        function loadAllData() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    allData = JSON.parse(saved);
+                    if (!allData.done) allData.done = {};
+                    if (!allData.poo) allData.poo = {};
+                }
+            } catch (e) { allData = { done: {}, poo: {} }; }
+        }
+
+        function saveAllData() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(allData)); } catch (e) {}
+        }
+
+        function getDoneSet() { return new Set(allData.done[func] || []); }
+        function getPooSet() { return new Set(allData.poo[func] || []); }
+        function setDoneSet(set) { allData.done[func] = [...set]; }
+        function setPooSet(set) { allData.poo[func] = [...set]; }
+
+        function clearData() {
+            if (confirm('¿Borrar TODO el progreso guardado?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                allData = { done: {}, poo: {} };
+                render();
+            }
+        }
+
+        function toggleMenu(id) {
+            const menu = $(id), icon = $('icon-' + id.replace('-menu',''));
+            menu.classList.toggle('open'); icon.classList.toggle('open');
+        }
+
+        function createCard(p, isDone, day) {
+            const showerToday = p.days.includes(day);
+            const hasPoo = getPooSet().has(p.id);
+            const badge = p.p === 1 ? '<div class="priority-badge">🔝</div>' : p.p === 2 ? '<div class="meal-badge">☕</div>' : '';
+            const emoji = p.p === 1 ? '🔝' : p.p === 2 ? '☕' : '';
+            
+            const div = document.createElement('div');
+            div.className = `bg-white p-2 rounded-lg flex items-center gap-2 card-shadow ${isDone ? 'completed-card' : ''} ${p.p === 1 ? 'priority-top' : p.p === 2 ? 'priority-meal' : 'priority-normal'}`;
+            div.id = `card-${p.id}`;
+            
+            div.innerHTML = `
+                ${badge}
+                <div class="room-badge w-9 h-9 rounded-md flex items-center justify-center font-black text-sm">${p.room}</div>
+                <div class="flex-1 min-w-0">
+                    <h2 class="text-[clamp(14px,4vw,18px)] font-black text-gray-800 uppercase truncate">${p.name}</h2>
+                    <div class="flex gap-0.5 mt-0.5 overflow-x-auto no-scrollbar">${DAYS.map(d => {
+                        const has = p.days.includes(d);
+                        const cls = has ? (d === day ? 'day-has-shower-today' : 'day-has-shower-other') : 'day-no-shower';
+                        return `<div class="day-badge ${cls}">${d}</div>`;
+                    }).join('')}</div>
+                </div>
+                <div class="flex gap-1 items-center">${emoji ? `<span class="emoji-icon">${emoji}</span>` : '<span class="emoji-icon invisible">🔝</span>'}${showerToday ? '<span class="emoji-icon">🚿</span>' : '<span class="emoji-icon invisible">🚿</span>'}</div>
+                <div class="flex flex-col gap-1 items-center">
+                    <button class="tick-btn w-9 h-9 rounded-full flex items-center justify-center ${isDone ? 'check-btn-complete' : 'check-btn'}" onclick="toggle('${p.id}',this,event,'done')"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></button>
+                    <button class="poo-btn w-7 h-7 rounded-full flex items-center justify-center text-sm ${hasPoo ? 'poo-btn-active' : ''}" onclick="toggle('${p.id}',this,event,'poo')">💩</button>
+                </div>
+            `;
+            return div;
+        }
+
+        function flyCard(card) {
+            const rect = card.getBoundingClientRect();
+            const target = $('completed-list').getBoundingClientRect();
+            const clone = card.cloneNode(true);
+            clone.className = 'flying-card';
+            clone.style.cssText = `left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;height:${rect.height}px`;
+            document.body.appendChild(clone);
+            clone.animate([
+                {transform:'scale(1) rotate(0deg)',opacity:1},
+                {transform:`translate(${target.left-rect.left+target.width/2-rect.width/2}px,${target.top-rect.top+20}px) scale(0.7) rotate(10deg)`,opacity:0}
+            ], {duration:600,easing:'cubic-bezier(0.4,0,0.2,1)'}).onfinish = () => clone.remove();
+            $('completed-section').classList.add('section-highlight');
+            setTimeout(() => $('completed-section').classList.remove('section-highlight'), 500);
+        }
+
+        function confetti(x, y) {
+            const colors = ['#cccc00','#f97316','#22c55e','#fbbf24'];
+            for (let i = 0; i < 10; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.cssText = `left:${x+(Math.random()-0.5)*60}px;top:${y+(Math.random()-0.5)*40}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*0.2}s`;
+                document.body.appendChild(c);
+                setTimeout(() => c.remove(), 800);
+            }
+        }
+
+        function toggle(id, btn, e, type) {
+            e.stopPropagation();
+            const card = $('card-' + id);
+            const doneSet = getDoneSet();
+            const pooSet = getPooSet();
+            
+            if (type === 'done') {
+                if (doneSet.has(id)) { doneSet.delete(id); } 
+                else {
+                    doneSet.add(id);
+                    if (navigator.vibrate) navigator.vibrate([30,50,30]);
+                    btn.classList.add('tick-btn-complete');
+                    confetti(btn.getBoundingClientRect().left + 24, btn.getBoundingClientRect().top + 24);
+                    flyCard(card);
+                    card.classList.add('card-completing');
+                    setTimeout(() => btn.classList.remove('tick-btn-complete'), 500);
+                }
+                setDoneSet(doneSet);
+            } else {
+                if (pooSet.has(id)) { pooSet.delete(id); } 
+                else {
+                    pooSet.add(id);
+                    btn.classList.add('poo-btn-active');
+                    if (navigator.vibrate) navigator.vibrate(30);
+                }
+                setPooSet(pooSet);
+            }
+            saveAllData();
+            render();
+        }
+
+        function setFunc(f) {
+            saveAllData();
+            func = f;
+            [5,6,8,9].forEach(n => {
+                $('btn-'+n).className = `py-2 rounded-lg font-bold text-xs ${n===f?'btn-primary text-white ring-2 ring-yellow-300':'bg-gray-200 text-gray-600'} shadow`;
+            });
+            render();
+        }
+
+        function setSort(s) {
+            sort = s;
+            ['priority','shower','room','alpha'].forEach(t => {
+                $('sort-'+t).className = `py-2 rounded-lg border-2 font-bold text-xs ${t===s?'bg-yellow-100 text-yellow-800 border-yellow-300':'bg-white text-gray-600 border-gray-200'}`;
+            });
+            render();
+        }
+
+        function render() {
+            const day = today();
+            const list = DB[func] || [];
+            const doneSet = getDoneSet();
+            const pooSet = getPooSet();
+            const active = list.filter(p => !doneSet.has(p.id));
+            const completed = list.filter(p => doneSet.has(p.id));
+
+            active.sort((a,b) => {
+                if (sort === 'priority') return a.p - b.p || a.room - b.room;
+                if (sort === 'room') return a.room - b.room;
+                if (sort === 'alpha') return a.name.localeCompare(b.name);
+                if (sort === 'shower') {
+                    const ah = a.days.includes(day) ? 1 : 0, bh = b.days.includes(day) ? 1 : 0;
+                    return bh - ah || a.name.localeCompare(b.name);
+                }
+                return 0;
+            });
+
+            $('active-list').innerHTML = active.length ? active.map(p => createCard(p,false,day).outerHTML).join('') : '<div class="text-center py-8"><div class="text-4xl mb-2">🎉</div><div class="text-lg font-bold text-green-600">¡Todo OK!</div></div>';
+            
+            const compSection = $('completed-section');
+            if (completed.length) {
+                compSection.classList.remove('hidden');
+                $('completed-list').innerHTML = completed.map(p => createCard(p,true,day).outerHTML).join('');
+            } else { compSection.classList.add('hidden'); }
+
+            const pct = list.length ? Math.round(completed.length / list.length * 100) : 0;
+            $('stats-text').textContent = `${completed.length}/${list.length} (${pct}%)`;
+            $('progress-fill').style.width = pct + '%';
+        }
+
+        // PWA Install
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            $('install-banner').style.display = 'block';
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choice) => {
+                    if (choice.outcome === 'accepted') {
+                        $('install-banner').style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        // Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
@@ -28,8 +397,12 @@
                     .catch(err => console.log('SW error:', err));
             });
         }
-        
-        // ... resto de tu JavaScript ...
+
+        window.addEventListener('beforeunload', () => { saveAllData(); });
+
+        $('current-date').textContent = dateStr();
+        loadAllData();
+        render();
     </script>
 </body>
 </html>
