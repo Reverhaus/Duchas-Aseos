@@ -1,4 +1,23 @@
-<!DOCTYPE html>
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <style>
+                body {
+                  background-color: white; /* Ensure the iframe has a white background */
+                }
+
+                swipeOutRight: translateX(0) → translateX(300px)
+swipeOutLeft:  translateX(0) → translateX(-300px)
+swipeIn:       translateX(-300px) → translateX(0)
+
+
+              </style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -61,11 +80,16 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
         .card-swiping { }
-        .card-swiped-out { animation: swipeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .card-swiped-right { animation: swipeOutRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .card-swiped-left { animation: swipeOutLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .card-swiped-in { animation: swipeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         
-        @keyframes swipeOut {
+        @keyframes swipeOutRight {
             to { transform: translateX(300px); opacity: 0; }
+        }
+        
+        @keyframes swipeOutLeft {
+            to { transform: translateX(-300px); opacity: 0; }
         }
         
         @keyframes swipeIn {
@@ -194,14 +218,6 @@
         </div>
     </header>
 
-    <div class="px-2 py-1.5 flex gap-2 text-[8px] flex-shrink-0 flex-wrap items-center" style="background: var(--gray); color: black;">
-        <span class="font-bold">LEYENDA:</span>
-        <span class="brutal-btn btn-accent px-1.5 py-0.5 text-[7px]">🔝</span>
-        <span class="brutal-btn btn-primary px-1.5 py-0.5 text-[7px]">☕</span>
-        <span class="day-badge day-has-shower-today">V</span><span>HOY</span>
-        <span class="day-badge day-has-shower-other">X</span><span>DUCHA</span>
-    </div>
-
     <main class="flex-1 overflow-y-auto p-2 pb-20 scroll-smooth no-scrollbar" id="main-scroll">
         <div id="active-list" class="space-y-2"></div>
         <div id="completed-section" class="mt-6 hidden">
@@ -236,7 +252,7 @@
 
         const DAYS = ['L','M','X','J','V','S','D'];
         const DAY_MAP = ['D','L','M','X','J','V','S'];
-        const STORAGE_KEY = 'aseo_progress_v8';
+        const STORAGE_KEY = 'aseo_progress_v9';
         
         let func = 5, sort = 'priority';
         let allData = { done: {}, poo: {} };
@@ -383,7 +399,7 @@
             };
             div.appendChild(pooBtn);
             
-            // Swipe functionality - FIXED
+            // Swipe functionality - FIXED DIRECTIONAL ANIMATION
             let startX = 0, currentX = 0, isSwiping = false;
             const threshold = 80;
             
@@ -441,13 +457,22 @@
                         setTimeout(() => $('completed-section').classList.remove('section-highlight'), 400);
                         setTimeout(() => render(), 300);
                     } else {
-                        // Deactivate - slide out to RIGHT
+                        // Deactivate - animate in SWIPE DIRECTION
                         doneSet.add(p.id);
                         setDoneSet(doneSet);
                         saveAllData();
                         div.style.pointerEvents = 'none';
-                        div.style.transform = `translateX(${diff}px)`;
-                        div.classList.add('card-swiped-out');
+                        
+                        // Use directional animation based on swipe direction
+                        if (diff > 0) {
+                            // Swiped RIGHT → animate right
+                            div.style.transform = `translateX(${diff}px)`;
+                            div.classList.add('card-swiped-right');
+                        } else {
+                            // Swiped LEFT → animate left
+                            div.style.transform = `translateX(${diff}px)`;
+                            div.classList.add('card-swiped-left');
+                        }
                         
                         const rect = div.getBoundingClientRect();
                         particles(rect.left + rect.width/2, rect.top + 20, 'complete');
@@ -587,3 +612,11 @@
 </body>
 </html>
 
+
+
+              <script>
+                              
+              </script>
+                        </body>
+                        </html>
+                    
