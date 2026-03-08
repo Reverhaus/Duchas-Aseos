@@ -21,36 +21,38 @@
             --primary: #bdc800;
             --primary-dark: #9db000;
             --secondary: #235b4e;
-            --secondary-dark: #1a4539;
             --secondary-light: #3d7a6b;
             --accent: #e3a352;
             --accent-dark: #c98d3a;
-            --border-color: #235b4e;
+            --gray: #6b7280;
+            --gray-light: #9ca3af;
+            --border-color: #3d7a6b;
             --border-width: 2px;
             --shadow-offset: 3px;
         }
         
-        * { border-radius: 4px !important; }
+        * { border-radius: 6px !important; }
         
         .brutal-border { 
             border: var(--border-width) solid var(--border-color); 
-            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--secondary-light);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--gray-light);
             transition: all 0.2s;
         }
         
         .brutal-btn { 
             border: var(--border-width) solid var(--border-color); 
-            box-shadow: 2px 2px 0 var(--secondary-light);
+            box-shadow: 2px 2px 0 var(--gray-light);
             transition: all 0.1s;
             font-weight: 700;
             text-transform: uppercase;
             font-size: 10px;
+            cursor: pointer;
         }
-        .brutal-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--secondary-light); }
+        .brutal-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--gray-light); }
         
         .priority-top { border-left: 4px solid var(--accent); background: linear-gradient(90deg, rgba(227, 163, 82, 0.1) 0%, transparent 100%); }
         .priority-meal { border-left: 4px solid var(--secondary); background: linear-gradient(90deg, rgba(35, 91, 78, 0.1) 0%, transparent 100%); }
-        .priority-normal { border-left: 4px solid #ccc; }
+        .priority-normal { border-left: 4px solid var(--gray); }
         
         .completed-card { opacity: 0.35; filter: grayscale(80%); }
         .completed-card .poo-btn-active { filter: grayscale(0%); opacity: 1; }
@@ -73,6 +75,7 @@
             font-size: 28px;
             opacity: 0;
             transition: opacity 0.2s;
+            pointer-events: none;
         }
         .swipe-indicator.left { left: 10px; }
         .swipe-indicator.right { right: 10px; }
@@ -98,9 +101,10 @@
         
         .priority-badge, .meal-badge {
             position: absolute; top: -4px; right: -4px;
-            color: var(--white); font-size: 9px; font-weight: 700;
+            color: white; font-size: 9px; font-weight: 700;
             padding: 2px 5px; border: 1px solid var(--border-color);
-            box-shadow: 1px 1px 0 var(--secondary-light);
+            box-shadow: 1px 1px 0 var(--gray-light);
+            z-index: 10;
         }
         .priority-badge { background: var(--accent); }
         .meal-badge { background: var(--secondary); }
@@ -110,12 +114,12 @@
             border: 1px solid var(--border-color); font-weight: 700; font-size: 9px;
             text-transform: uppercase; flex-shrink: 0; font-family: 'Roboto Mono', monospace;
         }
-        .day-has-shower-today { background: var(--primary); color: var(--white); }
-        .day-has-shower-other { background: var(--secondary-light); color: var(--white); }
+        .day-has-shower-today { background: var(--primary); color: white; }
+        .day-has-shower-other { background: var(--secondary-light); color: white; }
         .day-no-shower { background: #f0f0f0; color: #bbb; }
         
         .room-badge {
-            background: var(--secondary); color: var(--white);
+            background: var(--gray); color: white;
             font-weight: 700; flex-shrink: 0; border: 1px solid var(--border-color);
         }
         
@@ -123,14 +127,16 @@
         
         .poo-btn {
             background: #f8f8f8; border: 1px solid var(--border-color);
-            box-shadow: 1px 1px 0 var(--secondary-light); transition: all 0.1s;
+            box-shadow: 1px 1px 0 var(--gray-light); transition: all 0.1s;
+            cursor: pointer;
         }
-        .poo-btn:active { transform: translate(1px, 1px); box-shadow: 0 0 0 var(--secondary-light); }
+        .poo-btn:active { transform: translate(1px, 1px); box-shadow: 0 0 0 var(--gray-light); }
         .poo-btn-active { background: var(--secondary) !important; color: white; }
         
-        .btn-primary { background: var(--primary); color: var(--white); }
-        .btn-secondary { background: var(--secondary); color: var(--white); }
-        .btn-accent { background: var(--accent); color: var(--white); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-accent { background: var(--accent); color: white; }
+        .btn-gray { background: var(--gray); color: white; }
         
         .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s; }
         .collapsible-content.open { max-height: 500px; }
@@ -143,11 +149,11 @@
         .header-compact { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
         .header-title { font-size: 15px; font-weight: 900; white-space: nowrap; letter-spacing: -0.5px; }
         .header-toggle-btn { padding: 5px 7px; font-size: 9px; white-space: nowrap; }
-        .clear-data-btn { background: #e76f51; color: white; border: 1px solid var(--border-color); padding: 5px 7px; font-size: 9px; font-weight: 700; box-shadow: 1px 1px 0 var(--secondary-light); }
+        .clear-data-btn { background: #e76f51; color: white; border: 1px solid var(--border-color); padding: 5px 7px; font-size: 9px; font-weight: 700; box-shadow: 1px 1px 0 var(--gray-light); cursor: pointer; }
         
         .swipe-hint {
             position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%);
-            background: var(--secondary); color: var(--white); padding: 6px 14px;
+            background: var(--gray); color: white; padding: 6px 14px;
             font-size: 10px; font-weight: 700; z-index: 100;
             animation: pulse 2s infinite;
         }
@@ -236,7 +242,7 @@
 
         const DAYS = ['L','M','X','J','V','S','D'];
         const DAY_MAP = ['D','L','M','X','J','V','S'];
-        const STORAGE_KEY = 'aseo_progress_v4';
+        const STORAGE_KEY = 'aseo_progress_v5';
         
         let func = 5, sort = 'priority';
         let allData = { done: {}, poo: {} };
@@ -281,56 +287,135 @@
         function createCard(p, isDone, day) {
             const showerToday = p.days.includes(day);
             const hasPoo = getPooSet().has(p.id);
-            const badge = p.p === 1 ? '<div class="priority-badge">🔝</div>' : p.p === 2 ? '<div class="meal-badge">☕</div>' : '';
-            const emoji = p.p === 1 ? '🔝' : p.p === 2 ? '☕' : '';
             
             const div = document.createElement('div');
             div.className = `card brutal-border bg-white p-2.5 flex items-center gap-2.5 ${isDone ? 'completed-card' : ''} ${p.p === 1 ? 'priority-top' : p.p === 2 ? 'priority-meal' : 'priority-normal'}`;
             div.id = `card-${p.id}`;
             div.style.position = 'relative';
             div.style.overflow = 'hidden';
+            div.style.cursor = 'grab';
             
-            div.innerHTML = `
-                ${badge}
-                <div class="swipe-indicator left">✅</div>
-                <div class="swipe-indicator right">✅</div>
-                <div class="room-badge w-9 h-9 flex items-center justify-center text-sm">${p.room}</div>
-                <div class="flex-1 min-w-0">
-                    <h2 class="text-sm font-bold uppercase tracking-tight" style="color: var(--border-color);">${p.name}</h2>
-                    <div class="flex gap-0.5 mt-0.5 overflow-x-auto no-scrollbar">${DAYS.map(d => {
-                        const has = p.days.includes(d);
-                        const cls = has ? (d === day ? 'day-has-shower-today' : 'day-has-shower-other') : 'day-no-shower';
-                        return `<div class="day-badge ${cls}">${d}</div>`;
-                    }).join('')}</div>
-                </div>
-                <div class="flex gap-0.5 items-center">${emoji ? `<span class="emoji-icon">${emoji}</span>` : '<span class="emoji-icon" style="visibility:hidden">🔝</span>'}${showerToday ? '<span class="emoji-icon">🚿</span>' : '<span class="emoji-icon" style="visibility:hidden">🚿</span>'}</div>
-                <button class="poo-btn w-7 h-7 flex items-center justify-center text-base" onclick="toggle('${p.id}',this,event,'poo')">${hasPoo ? '💩' : '🚽'}</button>
-            `;
+            // Badge
+            if (p.p === 1) {
+                const badge = document.createElement('div');
+                badge.className = 'priority-badge';
+                badge.textContent = '🔝';
+                div.appendChild(badge);
+            } else if (p.p === 2) {
+                const badge = document.createElement('div');
+                badge.className = 'meal-badge';
+                badge.textContent = '☕';
+                div.appendChild(badge);
+            }
             
-            // Swipe gestures
-            let startX, currentX, isSwiping = false;
+            // Swipe indicators
+            const leftIndicator = document.createElement('div');
+            leftIndicator.className = 'swipe-indicator left';
+            leftIndicator.textContent = '✅';
+            div.appendChild(leftIndicator);
+            
+            const rightIndicator = document.createElement('div');
+            rightIndicator.className = 'swipe-indicator right';
+            rightIndicator.textContent = '✅';
+            div.appendChild(rightIndicator);
+            
+            // Room badge
+            const roomBadge = document.createElement('div');
+            roomBadge.className = 'room-badge w-9 h-9 flex items-center justify-center text-sm';
+            roomBadge.textContent = p.room;
+            div.appendChild(roomBadge);
+            
+            // Name and days container
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'flex-1 min-w-0';
+            
+            const nameEl = document.createElement('h2');
+            nameEl.className = 'text-sm font-bold uppercase tracking-tight';
+            nameEl.style.color = 'var(--border-color)';
+            nameEl.textContent = p.name;
+            infoDiv.appendChild(nameEl);
+            
+            const daysDiv = document.createElement('div');
+            daysDiv.className = 'flex gap-0.5 mt-0.5 overflow-x-auto no-scrollbar';
+            DAYS.forEach(d => {
+                const has = p.days.includes(d);
+                const dayBadge = document.createElement('div');
+                dayBadge.className = `day-badge ${has ? (d === day ? 'day-has-shower-today' : 'day-has-shower-other') : 'day-no-shower'}`;
+                dayBadge.textContent = d;
+                daysDiv.appendChild(dayBadge);
+            });
+            infoDiv.appendChild(daysDiv);
+            div.appendChild(infoDiv);
+            
+            // Emojis
+            const emojiDiv = document.createElement('div');
+            emojiDiv.className = 'flex gap-0.5 items-center';
+            const priorityEmoji = p.p === 1 ? '🔝' : p.p === 2 ? '☕' : '';
+            if (priorityEmoji) {
+                const e1 = document.createElement('span');
+                e1.className = 'emoji-icon';
+                e1.textContent = priorityEmoji;
+                emojiDiv.appendChild(e1);
+            } else {
+                const e1 = document.createElement('span');
+                e1.className = 'emoji-icon';
+                e1.style.visibility = 'hidden';
+                e1.textContent = '🔝';
+                emojiDiv.appendChild(e1);
+            }
+            if (showerToday) {
+                const e2 = document.createElement('span');
+                e2.className = 'emoji-icon';
+                e2.textContent = '🚿';
+                emojiDiv.appendChild(e2);
+            } else {
+                const e2 = document.createElement('span');
+                e2.className = 'emoji-icon';
+                e2.style.visibility = 'hidden';
+                e2.textContent = '🚿';
+                emojiDiv.appendChild(e2);
+            }
+            div.appendChild(emojiDiv);
+            
+            // Poo button
+            const pooBtn = document.createElement('button');
+            pooBtn.className = `poo-btn w-7 h-7 flex items-center justify-center text-base`;
+            pooBtn.textContent = hasPoo ? '💩' : '🚽';
+            pooBtn.onclick = (e) => {
+                e.stopPropagation();
+                togglePoo(p.id, pooBtn);
+            };
+            div.appendChild(pooBtn);
+            
+            // Swipe functionality
+            let startX = 0, currentX = 0, isSwiping = false;
             const threshold = 100;
             
             div.addEventListener('touchstart', (e) => {
-                if (e.target.classList.contains('poo-btn')) return;
+                if (e.target === pooBtn) return;
                 startX = e.touches[0].clientX;
                 isSwiping = true;
                 div.classList.add('card-swiping');
             }, { passive: true });
             
             div.addEventListener('touchmove', (e) => {
-                if (!isSwiping || e.target.classList.contains('poo-btn')) return;
+                if (!isSwiping || e.target === pooBtn) return;
                 currentX = e.touches[0].clientX;
                 const diff = currentX - startX;
                 if (Math.abs(diff) > 10) {
                     div.style.transform = `translateX(${diff}px) rotate(${diff / 25}deg)`;
-                    div.classList.toggle('swiping-left', diff < -20);
-                    div.classList.toggle('swiping-right', diff > 20);
+                    if (diff < -20) {
+                        div.classList.add('swiping-left');
+                        div.classList.remove('swiping-right');
+                    } else if (diff > 20) {
+                        div.classList.add('swiping-right');
+                        div.classList.remove('swiping-left');
+                    }
                 }
             }, { passive: true });
             
             div.addEventListener('touchend', (e) => {
-                if (!isSwiping || e.target.classList.contains('poo-btn')) return;
+                if (!isSwiping) return;
                 isSwiping = false;
                 const diff = currentX - startX;
                 
@@ -344,7 +429,8 @@
                     setDoneSet(doneSet);
                     saveAllData();
                     
-                    confetti(div.getBoundingClientRect().left + div.offsetWidth/2, div.getBoundingClientRect().top + 20);
+                    const rect = div.getBoundingClientRect();
+                    confetti(rect.left + rect.width/2, rect.top + 20);
                     $('completed-section').classList.add('section-highlight');
                     setTimeout(() => $('completed-section').classList.remove('section-highlight'), 400);
                     
@@ -355,11 +441,17 @@
                 }
             });
             
+            div.addEventListener('touchcancel', () => {
+                isSwiping = false;
+                div.style.transform = '';
+                div.classList.remove('swiping-left', 'swiping-right', 'card-swiping');
+            });
+            
             return div;
         }
 
         function confetti(x, y) {
-            const colors = ['#bdc800','#235b4e','#e3a352','#3d7a6b'];
+            const colors = ['#bdc800','#235b4e','#e3a352','#6b7280'];
             for (let i = 0; i < 12; i++) {
                 const c = document.createElement('div');
                 c.className = 'confetti';
@@ -369,20 +461,17 @@
             }
         }
 
-        function toggle(id, btn, e, type) {
-            e.stopPropagation();
+        function togglePoo(id, btn) {
             const pooSet = getPooSet();
-            
-            if (type === 'poo') {
-                if (pooSet.has(id)) { pooSet.delete(id); } 
-                else {
-                    pooSet.add(id);
-                    if (navigator.vibrate) navigator.vibrate(30);
-                }
-                setPooSet(pooSet);
-                saveAllData();
-                render();
+            if (pooSet.has(id)) { 
+                pooSet.delete(id); 
+            } else {
+                pooSet.add(id);
+                if (navigator.vibrate) navigator.vibrate(30);
             }
+            setPooSet(pooSet);
+            saveAllData();
+            render();
         }
 
         function setFunc(f) {
@@ -423,13 +512,27 @@
                 return 0;
             });
 
-            $('active-list').innerHTML = active.length ? active.map(p => createCard(p,false,day).outerHTML).join('') : '<div class="text-center py-10 brutal-border bg-white"><div class="text-4xl mb-3">🎉</div><div class="text-lg font-bold" style="color: var(--secondary);">¡TODO OK!</div></div>';
+            const activeContainer = $('active-list');
+            activeContainer.innerHTML = '';
+            if (active.length) {
+                active.forEach(p => {
+                    activeContainer.appendChild(createCard(p, false, day));
+                });
+            } else {
+                activeContainer.innerHTML = '<div class="text-center py-10 brutal-border bg-white"><div class="text-4xl mb-3">🎉</div><div class="text-lg font-bold" style="color: var(--secondary);">¡TODO OK!</div></div>';
+            }
             
             const compSection = $('completed-section');
+            const completedContainer = $('completed-list');
+            completedContainer.innerHTML = '';
             if (completed.length) {
                 compSection.classList.remove('hidden');
-                $('completed-list').innerHTML = completed.map(p => createCard(p,true,day).outerHTML).join('');
-            } else { compSection.classList.add('hidden'); }
+                completed.forEach(p => {
+                    completedContainer.appendChild(createCard(p, true, day));
+                });
+            } else { 
+                compSection.classList.add('hidden'); 
+            }
 
             const pct = list.length ? Math.round(completed.length / list.length * 100) : 0;
             $('stats-text').textContent = `${completed.length}/${list.length} (${pct}%)`;
@@ -452,3 +555,4 @@
     </script>
 </body>
 </html>
+
