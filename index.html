@@ -51,7 +51,7 @@
         .brutal-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--gray); }
         
         .priority-top { border-left: 4px solid var(--accent); background: rgba(227, 163, 82, 0.5); }
-        .priority-meal { border-left: 4px solid var(--secondary); background: rgba(35, 91, 78, 0.5); }
+        .priority-meal { border-left: 4px solid var(--primary); background: rgba(189, 200, 0, 0.5); }
         .priority-normal { border-left: 4px solid var(--gray); background: white; }
         
         .completed-card { opacity: 0.35; filter: grayscale(80%); }
@@ -60,18 +60,17 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .card-swiping { transition: transform 0.05s; }
-        .card-swiped { animation: swipeOut 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        .card-swiped-in { animation: swipeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .card-swiping { }
+        .card-swiped-out { animation: swipeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .card-swiped-in { animation: swipeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         
         @keyframes swipeOut {
-            0% { transform: translateX(0); opacity: 1; }
-            100% { transform: translateX(300px); opacity: 0; }
+            to { transform: translateX(300px); opacity: 0; }
         }
         
         @keyframes swipeIn {
-            0% { transform: translateX(-300px); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
+            from { transform: translateX(-300px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         
         .swipe-indicator {
@@ -116,15 +115,15 @@
             z-index: 10;
         }
         .priority-badge { background: var(--accent); }
-        .meal-badge { background: var(--secondary); }
+        .meal-badge { background: var(--primary); }
         
         .day-badge {
             width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
             border: 1px solid var(--border-color); font-weight: 700; font-size: 9px;
             text-transform: uppercase; flex-shrink: 0; font-family: 'Roboto Mono', monospace;
         }
-        .day-has-shower-today { background: var(--secondary); color: white; }
-        .day-has-shower-other { background: var(--accent); color: white; }
+        .day-has-shower-today { background: var(--accent); color: white; }
+        .day-has-shower-other { background: var(--secondary); color: white; }
         .day-no-shower { background: var(--gray); color: #999; }
         
         .room-badge {
@@ -140,7 +139,7 @@
             cursor: pointer;
         }
         .poo-btn:active { transform: translate(1px, 1px); box-shadow: 0 0 0 var(--gray); }
-        .poo-btn-active { background: var(--secondary) !important; color: white; }
+        .poo-btn-active { background: var(--primary) !important; color: white; }
         
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: var(--secondary); color: white; }
@@ -198,7 +197,7 @@
     <div class="px-2 py-1.5 flex gap-2 text-[8px] flex-shrink-0 flex-wrap items-center" style="background: var(--gray); color: black;">
         <span class="font-bold">LEYENDA:</span>
         <span class="brutal-btn btn-accent px-1.5 py-0.5 text-[7px]">🔝</span>
-        <span class="brutal-btn btn-secondary px-1.5 py-0.5 text-[7px]">☕</span>
+        <span class="brutal-btn btn-primary px-1.5 py-0.5 text-[7px]">☕</span>
         <span class="day-badge day-has-shower-today">V</span><span>HOY</span>
         <span class="day-badge day-has-shower-other">X</span><span>DUCHA</span>
     </div>
@@ -237,7 +236,7 @@
 
         const DAYS = ['L','M','X','J','V','S','D'];
         const DAY_MAP = ['D','L','M','X','J','V','S'];
-        const STORAGE_KEY = 'aseo_progress_v7';
+        const STORAGE_KEY = 'aseo_progress_v8';
         
         let func = 5, sort = 'priority';
         let allData = { done: {}, poo: {} };
@@ -285,7 +284,6 @@
             
             const div = document.createElement('div');
             div.className = `card brutal-border p-2.5 flex items-center gap-2.5 ${isDone ? 'completed-card' : ''} ${p.p === 1 ? 'priority-top' : p.p === 2 ? 'priority-meal' : 'priority-normal'}`;
-            if (isAnimating) div.classList.add('card-swiped-in');
             div.id = `card-${p.id}`;
             div.style.position = 'relative';
             div.style.overflow = 'hidden';
@@ -385,7 +383,7 @@
             };
             div.appendChild(pooBtn);
             
-            // Swipe functionality
+            // Swipe functionality - FIXED
             let startX = 0, currentX = 0, isSwiping = false;
             const threshold = 80;
             
@@ -395,6 +393,7 @@
                 isSwiping = true;
                 div.classList.add('card-swiping');
                 div.style.transition = 'none';
+                div.style.transform = 'translateX(0)';
             }, { passive: true });
             
             div.addEventListener('touchmove', (e) => {
@@ -402,6 +401,7 @@
                 currentX = e.touches[0].clientX;
                 const diff = currentX - startX;
                 
+                // Move card in the direction of swipe
                 div.style.transform = `translateX(${diff}px)`;
                 
                 if (diff < -15) {
@@ -420,41 +420,54 @@
                 const diff = currentX - startX;
                 
                 if (Math.abs(diff) > threshold) {
-                    div.classList.remove('card-swiping');
+                    div.classList.remove('card-swiping', 'swiping-left', 'swiping-right');
                     
                     const doneSet = getDoneSet();
                     const wasDone = doneSet.has(p.id);
                     
                     if (wasDone) {
+                        // Reactivate - slide in from LEFT
                         doneSet.delete(p.id);
+                        setDoneSet(doneSet);
+                        saveAllData();
+                        div.style.pointerEvents = 'none';
+                        div.style.transform = 'translateX(-300px)';
                         div.classList.add('card-swiped-in');
+                        
+                        const rect = div.getBoundingClientRect();
+                        particles(rect.left + rect.width/2, rect.top + 20, 'reactivate');
+                        
+                        $('completed-section').classList.add('section-highlight');
+                        setTimeout(() => $('completed-section').classList.remove('section-highlight'), 400);
+                        setTimeout(() => render(), 300);
                     } else {
+                        // Deactivate - slide out to RIGHT
                         doneSet.add(p.id);
-                        div.classList.add('card-swiped');
+                        setDoneSet(doneSet);
+                        saveAllData();
+                        div.style.pointerEvents = 'none';
+                        div.style.transform = `translateX(${diff}px)`;
+                        div.classList.add('card-swiped-out');
+                        
+                        const rect = div.getBoundingClientRect();
+                        particles(rect.left + rect.width/2, rect.top + 20, 'complete');
+                        
+                        $('completed-section').classList.add('section-highlight');
+                        setTimeout(() => $('completed-section').classList.remove('section-highlight'), 400);
+                        setTimeout(() => render(), 300);
                     }
-                    
-                    setDoneSet(doneSet);
-                    saveAllData();
-                    
-                    div.style.pointerEvents = 'none';
-                    
-                    const rect = div.getBoundingClientRect();
-                    particles(rect.left + rect.width/2, rect.top + 20, wasDone ? 'reactivate' : 'complete');
-                    
-                    $('completed-section').classList.add('section-highlight');
-                    setTimeout(() => $('completed-section').classList.remove('section-highlight'), 400);
-                    
-                    setTimeout(() => render(), 350);
                 } else {
-                    div.style.transform = '';
+                    // Reset position
+                    div.style.transition = 'transform 0.2s';
+                    div.style.transform = 'translateX(0)';
                     div.classList.remove('swiping-left', 'swiping-right', 'card-swiping');
                 }
             });
             
             div.addEventListener('touchcancel', () => {
                 isSwiping = false;
-                div.style.transform = '';
-                div.style.transition = '';
+                div.style.transition = 'transform 0.2s';
+                div.style.transform = 'translateX(0)';
                 div.classList.remove('swiping-left', 'swiping-right', 'card-swiping');
             });
             
