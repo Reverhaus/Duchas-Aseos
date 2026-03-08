@@ -9,11 +9,7 @@
                   background-color: white; /* Ensure the iframe has a white background */
                 }
 
-                swipeOutRight: translateX(0) → translateX(300px)
-swipeOutLeft:  translateX(0) → translateX(-300px)
-swipeIn:       translateX(-300px) → translateX(0)
-
-
+                
               </style>
                         </head>
                         <body>
@@ -79,23 +75,7 @@ swipeIn:       translateX(-300px) → translateX(0)
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .card-swiping { }
-        .card-swiped-right { animation: swipeOutRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        .card-swiped-left { animation: swipeOutLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        .card-swiped-in { animation: swipeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        
-        @keyframes swipeOutRight {
-            to { transform: translateX(300px); opacity: 0; }
-        }
-        
-        @keyframes swipeOutLeft {
-            to { transform: translateX(-300px); opacity: 0; }
-        }
-        
-        @keyframes swipeIn {
-            from { transform: translateX(-300px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
+        .card-swiping { transition: transform 0.05s linear !important; }
         
         .swipe-indicator {
             position: absolute;
@@ -252,7 +232,7 @@ swipeIn:       translateX(-300px) → translateX(0)
 
         const DAYS = ['L','M','X','J','V','S','D'];
         const DAY_MAP = ['D','L','M','X','J','V','S'];
-        const STORAGE_KEY = 'aseo_progress_v9';
+        const STORAGE_KEY = 'aseo_progress_v10';
         
         let func = 5, sort = 'priority';
         let allData = { done: {}, poo: {} };
@@ -294,7 +274,7 @@ swipeIn:       translateX(-300px) → translateX(0)
             menu.classList.toggle('open');
         }
 
-        function createCard(p, isDone, day, isAnimating = false) {
+        function createCard(p, isDone, day) {
             const showerToday = p.days.includes(day);
             const hasPoo = getPooSet().has(p.id);
             
@@ -306,6 +286,7 @@ swipeIn:       translateX(-300px) → translateX(0)
             div.style.cursor = 'grab';
             div.style.touchAction = 'pan-y';
             div.style.userSelect = 'none';
+            div.style.willChange = 'transform';
             
             // Badge
             if (p.p === 1) {
@@ -399,15 +380,23 @@ swipeIn:       translateX(-300px) → translateX(0)
             };
             div.appendChild(pooBtn);
             
-            // Swipe functionality - FIXED DIRECTIONAL ANIMATION
+            // Swipe functionality - FIXED with Web Animations API
             let startX = 0, currentX = 0, isSwiping = false;
             const threshold = 80;
+            let currentAnimation = null;
             
             div.addEventListener('touchstart', (e) => {
                 if (e.target === pooBtn) return;
                 startX = e.touches[0].clientX;
                 isSwiping = true;
                 div.classList.add('card-swiping');
+                
+                // Cancel any existing animation
+                if (currentAnimation) {
+                    currentAnimation.cancel();
+                    currentAnimation = null;
+                }
+                
                 div.style.transition = 'none';
                 div.style.transform = 'translateX(0)';
             }, { passive: true });
@@ -417,7 +406,7 @@ swipeIn:       translateX(-300px) → translateX(0)
                 currentX = e.touches[0].clientX;
                 const diff = currentX - startX;
                 
-                // Move card in the direction of swipe
+                // Move card in the EXACT direction of swipe
                 div.style.transform = `translateX(${diff}px)`;
                 
                 if (diff < -15) {
@@ -432,7 +421,6 @@ swipeIn:       translateX(-300px) → translateX(0)
             div.addEventListener('touchend', (e) => {
                 if (!isSwiping) return;
                 isSwiping = false;
-                div.style.transition = '';
                 const diff = currentX - startX;
                 
                 if (Math.abs(diff) > threshold) {
@@ -441,59 +429,86 @@ swipeIn:       translateX(-300px) → translateX(0)
                     const doneSet = getDoneSet();
                     const wasDone = doneSet.has(p.id);
                     
+                    // Determine swipe direction
+                    const swipeDirection = diff > 0 ? 'right' : 'left';
+                    const endPosition = diff > 0 ? 350 : -350;
+                    
                     if (wasDone) {
-                        // Reactivate - slide in from LEFT
+                        // Reactivate - always slide in from left
                         doneSet.delete(p.id);
                         setDoneSet(doneSet);
                         saveAllData();
-                        div.style.pointerEvents = 'none';
-                        div.style.transform = 'translateX(-300px)';
-                        div.classList.add('card-swiped-in');
                         
-                        const rect = div.getBoundingClientRect();
-                        particles(rect.left + rect.width/2, rect.top + 20, 'reactivate');
+                        // Animate from left to center
+                        currentAnimation = div.animate([
+                            { transform: 'translateX(-350px)', opacity: 0 },
+                            { transform: 'translateX(0)', opacity: 1 }
+                        ], {
+                            duration: 300,
+                            easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                            fill: 'forwards'
+                        });
                         
+                        currentAnimation.onfinish = () => {
+                            div.style.transform = '';
+                            div.style.opacity = '';
+                        };
+                        
+                        particles(div.getBoundingClientRect().left + div.offsetWidth/2, div.getBoundingClientRect().top + 20, 'reactivate');
                         $('completed-section').classList.add('section-highlight');
                         setTimeout(() => $('completed-section').classList.remove('section-highlight'), 400);
                         setTimeout(() => render(), 300);
+                        
                     } else {
-                        // Deactivate - animate in SWIPE DIRECTION
+                        // Deactivate - slide out in SWIPE DIRECTION
                         doneSet.add(p.id);
                         setDoneSet(doneSet);
                         saveAllData();
-                        div.style.pointerEvents = 'none';
                         
-                        // Use directional animation based on swipe direction
-                        if (diff > 0) {
-                            // Swiped RIGHT → animate right
-                            div.style.transform = `translateX(${diff}px)`;
-                            div.classList.add('card-swiped-right');
-                        } else {
-                            // Swiped LEFT → animate left
-                            div.style.transform = `translateX(${diff}px)`;
-                            div.classList.add('card-swiped-left');
-                        }
+                        // Animate from CURRENT position to end position (continues the swipe motion)
+                        currentAnimation = div.animate([
+                            { transform: `translateX(${diff}px)`, opacity: 1 },
+                            { transform: `translateX(${endPosition}px)`, opacity: 0 }
+                        ], {
+                            duration: 250,
+                            easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                            fill: 'forwards'
+                        });
                         
-                        const rect = div.getBoundingClientRect();
-                        particles(rect.left + rect.width/2, rect.top + 20, 'complete');
+                        currentAnimation.onfinish = () => {
+                            div.style.transform = '';
+                            div.style.opacity = '';
+                        };
                         
+                        particles(div.getBoundingClientRect().left + div.offsetWidth/2, div.getBoundingClientRect().top + 20, 'complete');
                         $('completed-section').classList.add('section-highlight');
                         setTimeout(() => $('completed-section').classList.remove('section-highlight'), 400);
                         setTimeout(() => render(), 300);
                     }
+                    
+                    div.style.pointerEvents = 'none';
+                    
                 } else {
-                    // Reset position
-                    div.style.transition = 'transform 0.2s';
+                    // Reset - spring back to center
+                    div.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
                     div.style.transform = 'translateX(0)';
-                    div.classList.remove('swiping-left', 'swiping-right', 'card-swiping');
+                    div.classList.remove('swiping-left', 'swiping-right');
+                    
+                    setTimeout(() => {
+                        div.style.transition = '';
+                    }, 250);
                 }
             });
             
             div.addEventListener('touchcancel', () => {
                 isSwiping = false;
-                div.style.transition = 'transform 0.2s';
+                div.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
                 div.style.transform = 'translateX(0)';
                 div.classList.remove('swiping-left', 'swiping-right', 'card-swiping');
+                
+                setTimeout(() => {
+                    div.style.transition = '';
+                }, 250);
             });
             
             return div;
@@ -615,7 +630,13 @@ swipeIn:       translateX(-300px) → translateX(0)
 
 
               <script>
-                              
+                              // Animación DESDE la posición actual del swipe
+div.animate([
+    { transform: `translateX(${diff}px)`, opacity: 1 },  // POSICIÓN ACTUAL
+    { transform: `translateX(${endPosition}px)`, opacity: 0 }  // DIRECCIÓN DEL SWIPE
+], { duration: 250, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' })
+
+
               </script>
                         </body>
                         </html>
