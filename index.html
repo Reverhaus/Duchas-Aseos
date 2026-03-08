@@ -60,37 +60,46 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .card-swiping { transition: transform 0.1s; }
-        .card-swiped { animation: swipeOut 0.4s ease-out forwards; }
+        .card-swiping { transition: transform 0.08s; }
+        .card-swiped { animation: swipeOut 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .card-swiped-in { animation: swipeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         
         @keyframes swipeOut {
-            0% { transform: translateX(0) rotate(0); opacity: 1; }
-            100% { transform: translateX(400px) rotate(15deg); opacity: 0; }
+            0% { transform: translateX(0); opacity: 1; }
+            100% { transform: translateX(300px); opacity: 0; }
+        }
+        
+        @keyframes swipeIn {
+            0% { transform: translateX(-300px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
         }
         
         .swipe-indicator {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 28px;
+            font-size: 24px;
             opacity: 0;
-            transition: opacity 0.2s;
+            transition: opacity 0.15s;
             pointer-events: none;
+            font-weight: 700;
         }
-        .swipe-indicator.left { left: 10px; }
-        .swipe-indicator.right { right: 10px; }
+        .swipe-indicator.left { left: 15px; color: var(--primary); }
+        .swipe-indicator.right { right: 15px; color: var(--primary); }
         .card.swiping-left .swipe-indicator.left { opacity: 1; }
         .card.swiping-right .swipe-indicator.right { opacity: 1; }
         
-        .confetti {
-            position: fixed; width: 8px; height: 8px;
-            animation: confettiFall 0.6s ease-out forwards;
-            pointer-events: none; z-index: 1000;
-            border-radius: 2px;
+        .particle {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            animation: particleFade 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            pointer-events: none;
+            z-index: 1000;
         }
-        @keyframes confettiFall {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(80px) rotate(360deg); opacity: 0; }
+        @keyframes particleFade {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
         }
         
         .section-highlight { animation: sectionGlow 0.4s ease-out; }
@@ -155,9 +164,9 @@
             position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%);
             background: var(--gray); color: white; padding: 6px 14px;
             font-size: 10px; font-weight: 700; z-index: 100;
-            animation: pulse 2s infinite;
+            animation: pulse 3s infinite;
         }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 0.4; } }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
@@ -202,7 +211,7 @@
         <span class="day-badge day-has-shower-other">X</span><span>DUCHA</span>
     </div>
 
-    <div class="swipe-hint">👈 DESLIZA PARA COMPLETAR 👉</div>
+    <div class="swipe-hint">← DESLIZA →</div>
 
     <main class="flex-1 overflow-y-auto p-2 pb-28 scroll-smooth no-scrollbar" id="main-scroll">
         <div id="active-list" class="space-y-2"></div>
@@ -242,7 +251,7 @@
 
         const DAYS = ['L','M','X','J','V','S','D'];
         const DAY_MAP = ['D','L','M','X','J','V','S'];
-        const STORAGE_KEY = 'aseo_progress_v5';
+        const STORAGE_KEY = 'aseo_progress_v6';
         
         let func = 5, sort = 'priority';
         let allData = { done: {}, poo: {} };
@@ -284,16 +293,18 @@
             menu.classList.toggle('open');
         }
 
-        function createCard(p, isDone, day) {
+        function createCard(p, isDone, day, isAnimating = false) {
             const showerToday = p.days.includes(day);
             const hasPoo = getPooSet().has(p.id);
             
             const div = document.createElement('div');
             div.className = `card brutal-border bg-white p-2.5 flex items-center gap-2.5 ${isDone ? 'completed-card' : ''} ${p.p === 1 ? 'priority-top' : p.p === 2 ? 'priority-meal' : 'priority-normal'}`;
+            if (isAnimating) div.classList.add('card-swiped-in');
             div.id = `card-${p.id}`;
             div.style.position = 'relative';
             div.style.overflow = 'hidden';
             div.style.cursor = 'grab';
+            div.style.touchAction = 'pan-y';
             
             // Badge
             if (p.p === 1) {
@@ -311,12 +322,12 @@
             // Swipe indicators
             const leftIndicator = document.createElement('div');
             leftIndicator.className = 'swipe-indicator left';
-            leftIndicator.textContent = '✅';
+            leftIndicator.textContent = '✓';
             div.appendChild(leftIndicator);
             
             const rightIndicator = document.createElement('div');
             rightIndicator.className = 'swipe-indicator right';
-            rightIndicator.textContent = '✅';
+            rightIndicator.textContent = '✓';
             div.appendChild(rightIndicator);
             
             // Room badge
@@ -389,25 +400,26 @@
             
             // Swipe functionality
             let startX = 0, currentX = 0, isSwiping = false;
-            const threshold = 100;
+            const threshold = 80;
             
             div.addEventListener('touchstart', (e) => {
                 if (e.target === pooBtn) return;
                 startX = e.touches[0].clientX;
                 isSwiping = true;
                 div.classList.add('card-swiping');
+                div.style.transition = 'none';
             }, { passive: true });
             
             div.addEventListener('touchmove', (e) => {
                 if (!isSwiping || e.target === pooBtn) return;
                 currentX = e.touches[0].clientX;
                 const diff = currentX - startX;
-                if (Math.abs(diff) > 10) {
-                    div.style.transform = `translateX(${diff}px) rotate(${diff / 25}deg)`;
-                    if (diff < -20) {
+                if (Math.abs(diff) > 5) {
+                    div.style.transform = `translateX(${diff}px)`;
+                    if (diff < -15) {
                         div.classList.add('swiping-left');
                         div.classList.remove('swiping-right');
-                    } else if (diff > 20) {
+                    } else if (diff > 15) {
                         div.classList.add('swiping-right');
                         div.classList.remove('swiping-left');
                     }
@@ -417,24 +429,39 @@
             div.addEventListener('touchend', (e) => {
                 if (!isSwiping) return;
                 isSwiping = false;
+                div.style.transition = '';
                 const diff = currentX - startX;
                 
                 if (Math.abs(diff) > threshold) {
                     div.classList.remove('card-swiping');
-                    div.classList.add('card-swiped');
-                    div.style.pointerEvents = 'none';
                     
+                    // Toggle status (activate or deactivate)
                     const doneSet = getDoneSet();
-                    doneSet.add(p.id);
+                    const wasDone = doneSet.has(p.id);
+                    
+                    if (wasDone) {
+                        // Reactivate - move to active list
+                        doneSet.delete(p.id);
+                        div.classList.add('card-swiped-in');
+                    } else {
+                        // Deactivate - move to completed
+                        doneSet.add(p.id);
+                        div.classList.add('card-swiped');
+                    }
+                    
                     setDoneSet(doneSet);
                     saveAllData();
                     
+                    div.style.pointerEvents = 'none';
+                    
+                    // Minimal particles
                     const rect = div.getBoundingClientRect();
-                    confetti(rect.left + rect.width/2, rect.top + 20);
+                    particles(rect.left + rect.width/2, rect.top + 20, wasDone ? 'reactivate' : 'complete');
+                    
                     $('completed-section').classList.add('section-highlight');
                     setTimeout(() => $('completed-section').classList.remove('section-highlight'), 400);
                     
-                    setTimeout(() => render(), 400);
+                    setTimeout(() => render(), 350);
                 } else {
                     div.style.transform = '';
                     div.classList.remove('swiping-left', 'swiping-right', 'card-swiping');
@@ -444,20 +471,28 @@
             div.addEventListener('touchcancel', () => {
                 isSwiping = false;
                 div.style.transform = '';
+                div.style.transition = '';
                 div.classList.remove('swiping-left', 'swiping-right', 'card-swiping');
             });
             
             return div;
         }
 
-        function confetti(x, y) {
-            const colors = ['#bdc800','#235b4e','#e3a352','#6b7280'];
-            for (let i = 0; i < 12; i++) {
-                const c = document.createElement('div');
-                c.className = 'confetti';
-                c.style.cssText = `left:${x+(Math.random()-0.5)*60}px;top:${y+(Math.random()-0.5)*40}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*0.1}s`;
-                document.body.appendChild(c);
-                setTimeout(() => c.remove(), 600);
+        function particles(x, y, type) {
+            const colors = type === 'complete' ? ['var(--primary)', 'var(--secondary)'] : ['var(--accent)', 'var(--gray)'];
+            const count = type === 'complete' ? 6 : 4;
+            
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.cssText = `
+                    left: ${x + (i - count/2) * 8}px;
+                    top: ${y}px;
+                    background: ${colors[i % colors.length]};
+                    animation-delay: ${i * 0.05}s;
+                `;
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 400);
             }
         }
 
@@ -519,7 +554,7 @@
                     activeContainer.appendChild(createCard(p, false, day));
                 });
             } else {
-                activeContainer.innerHTML = '<div class="text-center py-10 brutal-border bg-white"><div class="text-4xl mb-3">🎉</div><div class="text-lg font-bold" style="color: var(--secondary);">¡TODO OK!</div></div>';
+                activeContainer.innerHTML = '<div class="text-center py-10 brutal-border bg-white"><div class="text-4xl mb-3">✓</div><div class="text-lg font-bold" style="color: var(--secondary);">TODO OK</div></div>';
             }
             
             const compSection = $('completed-section');
