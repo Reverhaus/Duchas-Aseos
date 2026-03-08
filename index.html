@@ -124,11 +124,11 @@
             text-transform: uppercase; flex-shrink: 0; font-family: 'Roboto Mono', monospace;
         }
         .day-has-shower-today { background: var(--secondary); color: white; }
-        .day-has-shower-other { background: var(--gray-dark); color: white; }
+        .day-has-shower-other { background: var(--accent); color: white; }
         .day-no-shower { background: var(--gray); color: #999; }
         
         .room-badge {
-            background: var(--gray-dark); color: white;
+            background: var(--primary); color: white;
             font-weight: 700; flex-shrink: 0; border: 1px solid var(--border-color);
         }
         
@@ -284,7 +284,7 @@
             const hasPoo = getPooSet().has(p.id);
             
             const div = document.createElement('div');
-            div.className = `card brutal-border bg-white p-2.5 flex items-center gap-2.5 ${isDone ? 'completed-card' : ''} ${p.p === 1 ? 'priority-top' : p.p === 2 ? 'priority-meal' : 'priority-normal'}`;
+            div.className = `card brutal-border p-2.5 flex items-center gap-2.5 ${isDone ? 'completed-card' : ''} ${p.p === 1 ? 'priority-top' : p.p === 2 ? 'priority-meal' : 'priority-normal'}`;
             if (isAnimating) div.classList.add('card-swiped-in');
             div.id = `card-${p.id}`;
             div.style.position = 'relative';
@@ -385,7 +385,7 @@
             };
             div.appendChild(pooBtn);
             
-            // Swipe functionality - FIXED for left/right
+            // Swipe functionality
             let startX = 0, currentX = 0, isSwiping = false;
             const threshold = 80;
             
@@ -402,7 +402,6 @@
                 currentX = e.touches[0].clientX;
                 const diff = currentX - startX;
                 
-                // Move card in the direction of swipe (LEFT = negative, RIGHT = positive)
                 div.style.transform = `translateX(${diff}px)`;
                 
                 if (diff < -15) {
@@ -423,16 +422,13 @@
                 if (Math.abs(diff) > threshold) {
                     div.classList.remove('card-swiping');
                     
-                    // Toggle status (activate or deactivate)
                     const doneSet = getDoneSet();
                     const wasDone = doneSet.has(p.id);
                     
                     if (wasDone) {
-                        // Reactivate - move to active list
                         doneSet.delete(p.id);
                         div.classList.add('card-swiped-in');
                     } else {
-                        // Deactivate - move to completed
                         doneSet.add(p.id);
                         div.classList.add('card-swiped');
                     }
@@ -442,7 +438,6 @@
                     
                     div.style.pointerEvents = 'none';
                     
-                    // Minimal particles
                     const rect = div.getBoundingClientRect();
                     particles(rect.left + rect.width/2, rect.top + 20, wasDone ? 'reactivate' : 'complete');
                     
