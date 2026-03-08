@@ -24,35 +24,35 @@
             --secondary-light: #3d7a6b;
             --accent: #e3a352;
             --accent-dark: #c98d3a;
-            --gray: #6b7280;
-            --gray-light: #9ca3af;
+            --gray: #cccccc;
+            --gray-dark: #999999;
             --border-color: #3d7a6b;
             --border-width: 2px;
             --shadow-offset: 3px;
         }
         
-        * { border-radius: 6px !important; }
+        * { border-radius: 0 !important; }
         
         .brutal-border { 
             border: var(--border-width) solid var(--border-color); 
-            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--gray-light);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--gray);
             transition: all 0.2s;
         }
         
         .brutal-btn { 
             border: var(--border-width) solid var(--border-color); 
-            box-shadow: 2px 2px 0 var(--gray-light);
+            box-shadow: 2px 2px 0 var(--gray);
             transition: all 0.1s;
             font-weight: 700;
             text-transform: uppercase;
             font-size: 10px;
             cursor: pointer;
         }
-        .brutal-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--gray-light); }
+        .brutal-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--gray); }
         
-        .priority-top { border-left: 4px solid var(--accent); background: linear-gradient(90deg, rgba(227, 163, 82, 0.1) 0%, transparent 100%); }
-        .priority-meal { border-left: 4px solid var(--secondary); background: linear-gradient(90deg, rgba(35, 91, 78, 0.1) 0%, transparent 100%); }
-        .priority-normal { border-left: 4px solid var(--gray); }
+        .priority-top { border-left: 4px solid var(--accent); background: rgba(227, 163, 82, 0.5); }
+        .priority-meal { border-left: 4px solid var(--secondary); background: rgba(35, 91, 78, 0.5); }
+        .priority-normal { border-left: 4px solid var(--gray); background: white; }
         
         .completed-card { opacity: 0.35; filter: grayscale(80%); }
         .completed-card .poo-btn-active { filter: grayscale(0%); opacity: 1; }
@@ -60,7 +60,7 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .card-swiping { transition: transform 0.08s; }
+        .card-swiping { transition: transform 0.05s; }
         .card-swiped { animation: swipeOut 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .card-swiped-in { animation: swipeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         
@@ -112,7 +112,7 @@
             position: absolute; top: -4px; right: -4px;
             color: white; font-size: 9px; font-weight: 700;
             padding: 2px 5px; border: 1px solid var(--border-color);
-            box-shadow: 1px 1px 0 var(--gray-light);
+            box-shadow: 1px 1px 0 var(--gray);
             z-index: 10;
         }
         .priority-badge { background: var(--accent); }
@@ -123,12 +123,12 @@
             border: 1px solid var(--border-color); font-weight: 700; font-size: 9px;
             text-transform: uppercase; flex-shrink: 0; font-family: 'Roboto Mono', monospace;
         }
-        .day-has-shower-today { background: var(--primary); color: white; }
-        .day-has-shower-other { background: var(--secondary-light); color: white; }
-        .day-no-shower { background: #f0f0f0; color: #bbb; }
+        .day-has-shower-today { background: var(--secondary); color: white; }
+        .day-has-shower-other { background: var(--gray-dark); color: white; }
+        .day-no-shower { background: var(--gray); color: #999; }
         
         .room-badge {
-            background: var(--gray); color: white;
+            background: var(--gray-dark); color: white;
             font-weight: 700; flex-shrink: 0; border: 1px solid var(--border-color);
         }
         
@@ -136,16 +136,16 @@
         
         .poo-btn {
             background: #f8f8f8; border: 1px solid var(--border-color);
-            box-shadow: 1px 1px 0 var(--gray-light); transition: all 0.1s;
+            box-shadow: 1px 1px 0 var(--gray); transition: all 0.1s;
             cursor: pointer;
         }
-        .poo-btn:active { transform: translate(1px, 1px); box-shadow: 0 0 0 var(--gray-light); }
+        .poo-btn:active { transform: translate(1px, 1px); box-shadow: 0 0 0 var(--gray); }
         .poo-btn-active { background: var(--secondary) !important; color: white; }
         
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: var(--secondary); color: white; }
         .btn-accent { background: var(--accent); color: white; }
-        .btn-gray { background: var(--gray); color: white; }
+        .btn-gray { background: var(--gray); color: black; }
         
         .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s; }
         .collapsible-content.open { max-height: 500px; }
@@ -158,22 +158,14 @@
         .header-compact { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
         .header-title { font-size: 15px; font-weight: 900; white-space: nowrap; letter-spacing: -0.5px; }
         .header-toggle-btn { padding: 5px 7px; font-size: 9px; white-space: nowrap; }
-        .clear-data-btn { background: #e76f51; color: white; border: 1px solid var(--border-color); padding: 5px 7px; font-size: 9px; font-weight: 700; box-shadow: 1px 1px 0 var(--gray-light); cursor: pointer; }
-        
-        .swipe-hint {
-            position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%);
-            background: var(--gray); color: white; padding: 6px 14px;
-            font-size: 10px; font-weight: 700; z-index: 100;
-            animation: pulse 3s infinite;
-        }
-        @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 0.4; } }
+        .clear-data-btn { background: #e76f51; color: white; border: 1px solid var(--border-color); padding: 5px 7px; font-size: 9px; font-weight: 700; box-shadow: 1px 1px 0 var(--gray); cursor: pointer; }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
 
-    <header class="bg-white border-b-2 p-2 z-10 flex-shrink-0" style="border-color: var(--border-color);">
+    <header class="p-2 z-10 flex-shrink-0" style="background: var(--primary); border-bottom: var(--border-width) solid var(--border-color);">
         <div class="header-compact mb-2">
-            <h1 class="header-title" style="color: var(--secondary);">🚿 ASEO</h1>
+            <h1 class="header-title" style="color: white;">🚿 ASEO</h1>
             <div id="current-date" class="text-[8px] font-bold text-white px-2 py-0.5" style="background: var(--secondary);"></div>
             <button onclick="toggleMenu('function-menu')" class="header-toggle-btn flex-1 brutal-btn bg-white" style="color: var(--border-color);">
                 📋 FUNCIONES
@@ -203,7 +195,7 @@
         </div>
     </header>
 
-    <div class="px-2 py-1.5 flex gap-2 text-[8px] flex-shrink-0 flex-wrap items-center" style="background: var(--secondary); color: white;">
+    <div class="px-2 py-1.5 flex gap-2 text-[8px] flex-shrink-0 flex-wrap items-center" style="background: var(--gray); color: black;">
         <span class="font-bold">LEYENDA:</span>
         <span class="brutal-btn btn-accent px-1.5 py-0.5 text-[7px]">🔝</span>
         <span class="brutal-btn btn-secondary px-1.5 py-0.5 text-[7px]">☕</span>
@@ -211,9 +203,7 @@
         <span class="day-badge day-has-shower-other">X</span><span>DUCHA</span>
     </div>
 
-    <div class="swipe-hint">← DESLIZA →</div>
-
-    <main class="flex-1 overflow-y-auto p-2 pb-28 scroll-smooth no-scrollbar" id="main-scroll">
+    <main class="flex-1 overflow-y-auto p-2 pb-20 scroll-smooth no-scrollbar" id="main-scroll">
         <div id="active-list" class="space-y-2"></div>
         <div id="completed-section" class="mt-6 hidden">
             <h3 class="text-white font-bold uppercase text-[9px] mb-2 px-2 py-1" style="background: var(--secondary);">✅ COMPLETADOS</h3>
@@ -222,10 +212,6 @@
     </main>
 
     <footer class="fixed bottom-0 w-full z-20">
-        <div class="bg-white border-t px-2 py-1.5 flex justify-center gap-4 text-[8px] font-bold" style="border-color: var(--border-color);">
-            <div class="flex items-center gap-1"><div class="w-5 h-5 flex items-center justify-center text-white" style="background: var(--secondary);">✓</div><span>ASEO OK</span></div>
-            <div class="flex items-center gap-1"><div class="w-5 h-5 flex items-center justify-center text-white" style="background: var(--secondary);">💩</div><span>DEPOS</span></div>
-        </div>
         <div class="relative" style="background: var(--secondary);">
             <div id="progress-fill" class="stats-bar-bg" style="width: 0%"></div>
             <div class="relative z-2 py-2.5 text-center text-white font-bold text-xs" id="stats-text">0 / 0</div>
@@ -251,7 +237,7 @@
 
         const DAYS = ['L','M','X','J','V','S','D'];
         const DAY_MAP = ['D','L','M','X','J','V','S'];
-        const STORAGE_KEY = 'aseo_progress_v6';
+        const STORAGE_KEY = 'aseo_progress_v7';
         
         let func = 5, sort = 'priority';
         let allData = { done: {}, poo: {} };
@@ -305,6 +291,7 @@
             div.style.overflow = 'hidden';
             div.style.cursor = 'grab';
             div.style.touchAction = 'pan-y';
+            div.style.userSelect = 'none';
             
             // Badge
             if (p.p === 1) {
@@ -398,7 +385,7 @@
             };
             div.appendChild(pooBtn);
             
-            // Swipe functionality
+            // Swipe functionality - FIXED for left/right
             let startX = 0, currentX = 0, isSwiping = false;
             const threshold = 80;
             
@@ -414,15 +401,16 @@
                 if (!isSwiping || e.target === pooBtn) return;
                 currentX = e.touches[0].clientX;
                 const diff = currentX - startX;
-                if (Math.abs(diff) > 5) {
-                    div.style.transform = `translateX(${diff}px)`;
-                    if (diff < -15) {
-                        div.classList.add('swiping-left');
-                        div.classList.remove('swiping-right');
-                    } else if (diff > 15) {
-                        div.classList.add('swiping-right');
-                        div.classList.remove('swiping-left');
-                    }
+                
+                // Move card in the direction of swipe (LEFT = negative, RIGHT = positive)
+                div.style.transform = `translateX(${diff}px)`;
+                
+                if (diff < -15) {
+                    div.classList.add('swiping-left');
+                    div.classList.remove('swiping-right');
+                } else if (diff > 15) {
+                    div.classList.add('swiping-right');
+                    div.classList.remove('swiping-left');
                 }
             }, { passive: true });
             
@@ -479,7 +467,7 @@
         }
 
         function particles(x, y, type) {
-            const colors = type === 'complete' ? ['var(--primary)', 'var(--secondary)'] : ['var(--accent)', 'var(--gray)'];
+            const colors = type === 'complete' ? ['var(--primary)', 'var(--secondary)'] : ['var(--accent)', 'var(--gray-dark)'];
             const count = type === 'complete' ? 6 : 4;
             
             for (let i = 0; i < count; i++) {
