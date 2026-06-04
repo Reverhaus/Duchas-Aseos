@@ -14,15 +14,18 @@ body {
     --accent-dark: #c98d3a;
     --gray: #cccccc;
     --gray-dark: #999999;
-    --border-color: #3d7a6b;
+    --border-color: #235b4e; /* Cambiado a --secondary para mejor contraste */
     --border-width: 2px;
     --shadow-offset: 3px;
+    --text-primary: #235b4e; /* Color de texto principal */
+    --text-secondary: #666666;
 }
 
 * {
     border-radius: 0 !important;
 }
 
+/* Botones y bordes brutalistas */
 .brutal-border {
     border: var(--border-width) solid var(--border-color);
     box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--gray);
@@ -44,14 +47,15 @@ body {
     box-shadow: 1px 1px 0 var(--gray);
 }
 
+/* Prioridades */
 .priority-top {
     border-left: 4px solid var(--accent);
-    background: rgba(227, 163, 82, 0.5);
+    background: rgba(227, 163, 82, 0.1);
 }
 
 .priority-meal {
     border-left: 4px solid var(--primary);
-    background: rgba(189, 200, 0, 0.5);
+    background: rgba(189, 200, 0, 0.1);
 }
 
 .priority-normal {
@@ -59,16 +63,17 @@ body {
     background: white;
 }
 
+/* Tarjetas */
 .completed-card {
-    opacity: 0.35;
-    filter: grayscale(80%);
+    opacity: 0.4;
+    filter: grayscale(70%);
 }
 
-.completed-card .poo-btn-active {
-    filter: grayscale(0%);
-    opacity: 1;
+.card {
+    transition: transform 0.2s, opacity 0.2s;
 }
 
+/* Scrollbar */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
@@ -78,10 +83,7 @@ body {
     scrollbar-width: none;
 }
 
-.card-swiping {
-    transition: transform 0.05s linear !important;
-}
-
+/* Indicadores de swipe */
 .swipe-indicator {
     position: absolute;
     top: 50%;
@@ -91,26 +93,23 @@ body {
     transition: opacity 0.15s;
     pointer-events: none;
     font-weight: 700;
+    color: var(--primary);
 }
 
 .swipe-indicator.left {
     left: 15px;
-    color: var(--primary);
 }
 
 .swipe-indicator.right {
     right: 15px;
-    color: var(--primary);
 }
 
-.card.swiping-left .swipe-indicator.left {
-    opacity: 1;
-}
-
+.card.swiping-left .swipe-indicator.left,
 .card.swiping-right .swipe-indicator.right {
     opacity: 1;
 }
 
+/* Partículas de animación */
 .particle {
     position: fixed;
     width: 6px;
@@ -131,39 +130,41 @@ body {
     }
 }
 
-.section-highlight {
-    animation: sectionGlow 0.4s ease-out;
+/* Sección de completados */
+#completed-section {
+    transition: max-height 0.3s ease-out, opacity 0.3s;
+    max-height: 500px;
+    overflow: hidden;
 }
 
-@keyframes sectionGlow {
-    0%, 100% {
-        background-color: transparent;
-    }
-    50% {
-        background-color: rgba(189, 200, 0, 0.15);
-    }
+#completed-section.hidden {
+    max-height: 0;
+    opacity: 0;
 }
 
-.priority-badge,
-.meal-badge {
+/* Barra de progreso */
+.stats-bar-bg {
     position: absolute;
-    top: -4px;
-    right: -4px;
-    color: white;
-    font-size: 9px;
-    font-weight: 700;
-    padding: 2px 5px;
-    border: 1px solid var(--border-color);
-    box-shadow: 1px 1px 0 var(--gray);
-    z-index: 10;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transition: width 0.5s, background 0.3s;
+    z-index: 1;
 }
 
-.priority-badge {
-    background: var(--accent);
-}
-
-.meal-badge {
+/* Badges */
+.room-badge {
     background: var(--primary);
+    color: white;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 1px solid var(--border-color);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
 }
 
 .day-badge {
@@ -195,26 +196,38 @@ body {
     color: #999;
 }
 
-.room-badge {
-    background: var(--primary);
+.priority-badge,
+.meal-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
     color: white;
+    font-size: 9px;
     font-weight: 700;
-    flex-shrink: 0;
+    padding: 2px 5px;
     border: 1px solid var(--border-color);
+    box-shadow: 1px 1px 0 var(--gray);
+    z-index: 10;
 }
 
-.emoji-icon {
-    font-size: 24px;
-    line-height: 1;
-    flex-shrink: 0;
+.priority-badge {
+    background: var(--accent);
 }
 
+.meal-badge {
+    background: var(--primary);
+}
+
+/* Botones */
 .poo-btn {
     background: #f8f8f8;
     border: 1px solid var(--border-color);
     box-shadow: 1px 1px 0 var(--gray);
     transition: all 0.1s;
     cursor: pointer;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
 }
 
 .poo-btn:active {
@@ -242,11 +255,7 @@ body {
     color: white;
 }
 
-.btn-gray {
-    background: var(--gray);
-    color: black;
-}
-
+/* Menús colapsables */
 .collapsible-content {
     max-height: 0;
     overflow: hidden;
@@ -257,16 +266,7 @@ body {
     max-height: 500px;
 }
 
-.stats-bar-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background: var(--primary);
-    transition: width 0.5s;
-    z-index: 1;
-}
-
+/* Header */
 .header-compact {
     display: flex;
     align-items: center;
@@ -296,4 +296,17 @@ body {
     font-weight: 700;
     box-shadow: 1px 1px 0 var(--gray);
     cursor: pointer;
+}
+
+/* Colores de la barra de progreso */
+.progress-low {
+    background: #e74c3c !important;
+}
+
+.progress-medium {
+    background: #f1c40f !important;
+}
+
+.progress-high {
+    background: #2ecc71 !important;
 }
