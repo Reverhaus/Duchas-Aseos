@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#bdc800">
+    <title>Alimentación - UCC/UAD</title>
+    <link rel="manifest" href="/Duchas-Aseos/manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Roboto:wght@400;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <header class="p-2 z-10 flex-shrink-0" style="background: var(--primary); border-bottom: var(--border-width) solid var(--border-color);">
+        <div class="header-compact mb-2">
+            <h1 class="header-title" style="color: white;">🍽️ ALIMENT.</h1>
+            <div id="current-date" class="text-[8px] font-bold text-white px-2 py-0.5" style="background: var(--secondary);"></div>
+            <button onclick="window.location.href='index.html'" class="header-toggle-btn flex-1 brutal-btn bg-white" style="color: var(--border-color);">
+                🚿 ASEO
+            </button>
+            <button onclick="toggleMenu('area-menu')" class="header-toggle-btn flex-1 brutal-btn bg-white" style="color: var(--border-color);">
+                📋 ÁREAS
+            </button>
+            <button onclick="clearAlimentacionData()" class="clear-data-btn">🗑️</button>
+        </div>
+        
+        <div id="area-menu" class="collapsible-content open">
+            <div class="grid grid-cols-3 gap-2 pt-2 pb-2">
+                <button onclick="setArea('UAD')" id="btn-UAD" class="py-2.5 brutal-btn btn-primary">UAD</button>
+                <button onclick="setArea('UCC')" id="btn-UCC" class="py-2.5 brutal-btn bg-gray-100" style="color: var(--border-color);">UCC</button>
+                <button onclick="setArea('PASILLO')" id="btn-PASILLO" class="py-2.5 brutal-btn bg-gray-100" style="color: var(--border-color);">PASILLO</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-2 pb-20 scroll-smooth no-scrollbar" id="main-scroll">
+        <div id="active-list" class="space-y-2"></div>
+        <div id="completed-section" class="mt-6 hidden">
+            <h3 class="text-white font-bold uppercase text-[9px] mb-2 px-2 py-1" style="background: var(--secondary);">✅ COMPLETADOS</h3>
+            <div id="completed-list" class="space-y-2"></div>
+        </div>
+    </main>
+
+    <footer class="fixed bottom-0 w-full z-20" style="background: var(--secondary);">
+        <div class="diet-counters">
+            <div class="diet-count"><span class="diet-emoji">🍗</span> <span id="count-normal">0</span></div>
+            <div class="diet-count"><span class="diet-emoji">🍞</span> <span id="count-blanda">0</span></div>
+            <div class="diet-count"><span class="diet-emoji">🥣</span> <span id="count-turmix">0</span></div>
+        </div>
+    </footer>
+
+    <script src="alimentacion.js"></script>
+    <script>
+        let allResidents = [];
+        let currentArea = 'UAD';
+        const STORAGE_KEY = 'alimentacion_progress_v1';
+        let discardedSet = new Set();
+
+        const $ = id => document.getElementById(id);
+        const dateStr = () => { const d = new Date(); return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}`; };
+
+        function loadSavedData() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    discardedSet = new Set(JSON.parse(saved));
+                }
+            } catch (e) {}
+        }
+
+        function saveData() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...discardedSet])); } catch (e) {}
+        }
+
+        function clearAlimentacionData() {
+            if (confirm('¿BORRAR TODO EL PROGRESO DE ALIMENTACIÓN?')) {
+                discardedSet.clear();
+                saveData();
+                render();
+            }
+        }
+
+        function toggleMenu(id) {
+            const menu = $(id);
+            menu.classList.toggle('open');
+        }
+
+        function setArea(area) {
+            currentArea = area;
+            ['UAD','UCC','PASILLO'].forEach(a => {
+                const btn = $('btn-'+a);
+                if (a === area) {
+                    btn.className = 'py-2.5 brutal-btn btn-primary';
+                    btn.style.color = 'white';
+                } else {
+                    btn.className = 'py-2.5 brutal-btn bg-gray-100';
+                    btn.style.color = 'var(--border-color)';
+                }
+            });
+            render();
+        }
+
+        async function loadResidents() {
+            try {
+                const basePath = window.location.pathname.includes('Duchas-Aseos') ? '/Duchas-Aseos' : '';
+                const response = await fetch(basePath + '/residentes.json');
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                const db = await response.json();
+                
+                // Flatten all arrays from 5,6,7,8,9
+                allResidents = [];
+                Object.values(db).forEach(list => {
+                    allResidents = allResidents.concat(list);
+                });
+                
+                console.log('✅ Residentes cargados para alimentación:', allResidents.length);
+                render();
+            } catch (error) {
+                console.error('❌ Error cargando residentes:', error);
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function getDietEmoji(dieta) {
+            if (dieta === 'TURMIX') return '🥣';
+            if (dieta === 'BLANDA') return '🍞';
+            return '🍗'; // NORMAL o default
+        }
+
+        function getDietColor(dieta) {
+            if (dieta === 'TURMIX') return 'var(--primary)'; // yellow
+            if (dieta === 'BLANDA') return 'var(--accent)'; // green
+            return 'var(--secondary)'; // orange
+        }
+
+        function createCard(p, isDone) {
+            const div = document.createElement('div');
+            div.className = `card brutal-border p-2.5 flex items-center gap-2.5 ${isDone ? 'completed-card' : ''}`;
+            div.id = `card-${p.id}`;
+            div.style.position = 'relative';
+            div.style.overflow = 'hidden';
+            div.style.cursor = 'grab';
+            div.style.touchAction = 'pan-y';
+            div.style.userSelect = 'none';
+            div.style.willChange = 'transform';
+            
+            // Swipe indicators
+            const leftIndicator = document.createElement('div');
+            leftIndicator.className = 'swipe-indicator left';
+            leftIndicator.textContent = '✓';
+            div.appendChild(leftIndicator);
+            
+            const rightIndicator = document.createElement('div');
+            rightIndicator.className = 'swipe-indicator right';
+            rightIndicator.textContent = '✓';
+            div.appendChild(rightIndicator);
+            
+            // Room badge
+            const roomBadge = document.createElement('div');
+            roomBadge.className = 'room-badge w-9 h-9 flex items-center justify-center text-sm';
+            roomBadge.textContent = p.room;
+            div.appendChild(roomBadge);
+            
+            // Name and diet info container
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'flex-1 min-w-0';
+            
+            const nameEl = document.createElement('h2');
+            nameEl.className = 'text-sm font-bold uppercase tracking-tight';
+            nameEl.style.color = 'var(--border-color)';
+            nameEl.textContent = p.name;
+            infoDiv.appendChild(nameEl);
+            
+            const dietDiv = document.createElement('div');
+            dietDiv.className = 'text-xs font-bold mt-0.5 uppercase';
+            dietDiv.style.color = getDietColor(p.dieta);
+            dietDiv.textContent = `${p.dieta || 'NORMAL'}${p.espesante ? ' + ESPESANTE' : ''}`;
+            infoDiv.appendChild(dietDiv);
+            
+            div.appendChild(infoDiv);
+            
+            // Diet Emoji
+            const emojiDiv = document.createElement('div');
+            emojiDiv.className = 'flex items-center justify-center w-8 h-8 text-2xl';
+            emojiDiv.textContent = getDietEmoji(p.dieta);
+            div.appendChild(emojiDiv);
+            
+            // Swipe functionality
+            let startX = 0, currentX = 0, isSwiping = false;
+            const threshold = 80;
+            let currentAnimation = null;
+            
+            div.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isSwiping = true;
+                div.classList.add('card-swiping');
+                
+                if (currentAnimation) {
+                    currentAnimation.cancel();
+                    currentAnimation = null;
+                }
+                
+                div.style.transition = 'none';
+                div.style.transform = 'translateX(0)';
+            }, { passive: true });
+            
+            div.addEventListener('touchmove', (e) => {
+                if (!isSwiping) return;
+                currentX = e.touches[0].clientX;
+                const diff = currentX - startX;
+                
+                div.style.transform = `translateX(${diff}px)`;
+                
+                if (diff < -15) {
+                    div.classList.add('swiping-left');
+                    div.classList.remove('swiping-right');
+                } else if (diff > 15) {
+                    div.classList.add('swiping-right');
+                    div.classList.remove('swiping-left');
+                }
+            }, { passive: true });
+            
+            div.addEventListener('touchend', (e) => {
+                if (!isSwiping) return;
+                isSwiping = false;
+                const diff = currentX - startX;
+                
+                if (Math.abs(diff) > threshold) {
+                    div.classList.remove('card-swiping', 'swiping-left', 'swiping-right');
+                    
+                    const wasDone = discardedSet.has(p.id);
+                    const endPosition = diff > 0 ? 350 : -350;
+                    
+                    if (wasDone) {
+                        // Reactivate
+                        discardedSet.delete(p.id);
+                        saveData();
+                        
+                        currentAnimation = div.animate([
+                            { transform: 'translateX(-350px)', opacity: 0 },
+                            { transform: 'translateX(0)', opacity: 1 }
+                        ], { duration: 300, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' });
+                        
+                        currentAnimation.onfinish = () => {
+                            div.style.transform = '';
+                            div.style.opacity = '';
+                        };
+                        
+                        particles(div.getBoundingClientRect().left + div.offsetWidth/2, div.getBoundingClientRect().top + 20, 'reactivate');
+                        $('completed-section').classList.add('section-highlight');
+                        setTimeout(() => $('completed-section').classList.remove('section-highlight'), 400);
+                        setTimeout(() => render(), 300);
+                        
+                    } else {
+                        // Deactivate
+                        discardedSet.add(p.id);
+                        saveData();
+                        
+                        currentAnimation = div.animate([
+                            { transform: `translateX(${diff}px)`, opacity: 1 },
+                            { transform: `translateX(${endPosition}px)`, opacity: 0 }
+                        ], { duration: 250, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' });
+                        
+                        currentAnimation.onfinish = () => {
+                            div.style.transform = '';
+                            div.style.opacity = '';
+                        };
+                        
+                        particles(div.getBoundingClientRect().left + div.offsetWidth/2, div.getBoundingClientRect().top + 20, 'complete');
+                        $('completed-section').classList.add('section-highlight');
+                        setTimeout(() => $('completed-section').classList.remove('section-highlight'), 400);
+                        setTimeout(() => render(), 300);
+                    }
+                    div.style.pointerEvents = 'none';
+                } else {
+                    div.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+                    div.style.transform = 'translateX(0)';
+                    div.classList.remove('swiping-left', 'swiping-right');
+                    setTimeout(() => { div.style.transition = ''; }, 250);
+                }
+            });
+            
+            div.addEventListener('touchcancel', () => {
+                isSwiping = false;
+                div.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+                div.style.transform = 'translateX(0)';
+                div.classList.remove('swiping-left', 'swiping-right', 'card-swiping');
+                setTimeout(() => { div.style.transition = ''; }, 250);
+            });
+            
+            return div;
+        }
+
+        function particles(x, y, type) {
+            const colors = type === 'complete' ? ['var(--primary)', 'var(--secondary)'] : ['var(--accent)', 'var(--gray-dark)'];
+            const count = type === 'complete' ? 6 : 4;
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.cssText = `
+                    left: ${x + (i - count/2) * 8}px;
+                    top: ${y}px;
+                    background: ${colors[i % colors.length]};
+                    animation-delay: ${i * 0.05}s;
+                `;
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 400);
+            }
+        }
+
+        function render() {
+            // Filter by area
+            const areaResidents = allResidents.filter(p => (p.area_convivencia || 'UAD') === currentArea);
+            
+            const active = areaResidents.filter(p => !discardedSet.has(p.id));
+            const completed = areaResidents.filter(p => discardedSet.has(p.id));
+
+            // Sort by room
+            active.sort((a,b) => a.room - b.room);
+
+            // Render Active
+            const activeContainer = $('active-list');
+            activeContainer.innerHTML = '';
+            if (active.length) {
+                active.forEach(p => {
+                    activeContainer.appendChild(createCard(p, false));
+                });
+            } else {
+                activeContainer.innerHTML = '<div class="text-center py-10 brutal-border bg-white"><div class="text-4xl mb-3">✓</div><div class="text-lg font-bold" style="color: var(--secondary);">TODO OK</div></div>';
+            }
+            
+            // Render Completed
+            const compSection = $('completed-section');
+            const completedContainer = $('completed-list');
+            completedContainer.innerHTML = '';
+            if (completed.length) {
+                compSection.classList.remove('hidden');
+                completed.forEach(p => {
+                    completedContainer.appendChild(createCard(p, true));
+                });
+            } else { 
+                compSection.classList.add('hidden'); 
+            }
+
+            // Update Counters based on ACTIVE residents
+            let normalCount = 0;
+            let blandaCount = 0;
+            let turmixCount = 0;
+            
+            active.forEach(p => {
+                const dieta = p.dieta || 'NORMAL';
+                if (dieta === 'TURMIX') turmixCount++;
+                else if (dieta === 'BLANDA') blandaCount++;
+                else normalCount++;
+            });
+
+            $('count-normal').textContent = normalCount;
+            $('count-blanda').textContent = blandaCount;
+            $('count-turmix').textContent = turmixCount;
+        }
+
+        $('current-date').textContent = dateStr();
+        loadSavedData();
+        loadResidents();
+    </script>
+</body>
+</html>
