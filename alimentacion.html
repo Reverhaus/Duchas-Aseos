@@ -32,6 +32,15 @@
                 <button onclick="setArea('PASILLO')" id="btn-PASILLO" class="py-2.5 brutal-btn bg-gray-100" style="color: var(--border-color);">PASILLO</button>
             </div>
         </div>
+        
+        <div id="meal-menu" class="border-t" style="border-color: var(--border-color);">
+            <div class="flex overflow-x-auto no-scrollbar gap-2 p-2" style="background: var(--gray);">
+                <button onclick="setMeal('desayuno')" id="btn-desayuno" class="flex-1 py-2 px-3 brutal-btn btn-accent text-[10px] uppercase">Desayuno</button>
+                <button onclick="setMeal('comida')" id="btn-comida" class="flex-1 py-2 px-3 brutal-btn bg-white text-[10px] uppercase" style="color: var(--border-color);">Comida</button>
+                <button onclick="setMeal('merienda')" id="btn-merienda" class="flex-1 py-2 px-3 brutal-btn bg-white text-[10px] uppercase" style="color: var(--border-color);">Merienda</button>
+                <button onclick="setMeal('cena')" id="btn-cena" class="flex-1 py-2 px-3 brutal-btn bg-white text-[10px] uppercase" style="color: var(--border-color);">Cena</button>
+            </div>
+        </div>
     </header>
 
     <main class="flex-1 overflow-y-auto p-2 pb-20 scroll-smooth no-scrollbar" id="main-scroll">
@@ -42,11 +51,23 @@
         </div>
     </main>
 
-    <footer class="fixed bottom-0 w-full z-20" style="background: var(--secondary);">
+    <footer class="fixed bottom-0 w-full z-20" style="background: var(--secondary); border-top: var(--border-width) solid var(--border-color);">
         <div class="diet-counters">
-            <div class="diet-count"><span class="diet-emoji">🍗</span> <span id="count-normal">0</span></div>
-            <div class="diet-count"><span class="diet-emoji">🍞</span> <span id="count-blanda">0</span></div>
-            <div class="diet-count"><span class="diet-emoji">🥣</span> <span id="count-turmix">0</span></div>
+            <div class="diet-count">
+                <span class="diet-emoji">🍗</span>
+                <span class="diet-label">Normal</span>
+                <span id="count-normal" class="diet-number">0</span>
+            </div>
+            <div class="diet-count">
+                <span class="diet-emoji">🍞</span>
+                <span class="diet-label">Blanda</span>
+                <span id="count-blanda" class="diet-number">0</span>
+            </div>
+            <div class="diet-count">
+                <span class="diet-emoji">🥣</span>
+                <span class="diet-label">Turmix</span>
+                <span id="count-turmix" class="diet-number">0</span>
+            </div>
         </div>
     </footer>
 
@@ -54,6 +75,7 @@
     <script>
         let allResidents = [];
         let currentArea = 'UAD';
+        let currentMeal = 'desayuno';
         const STORAGE_KEY = 'alimentacion_progress_v1';
         let discardedSet = new Set();
 
@@ -95,6 +117,21 @@
                     btn.style.color = 'white';
                 } else {
                     btn.className = 'py-2.5 brutal-btn bg-gray-100';
+                    btn.style.color = 'var(--border-color)';
+                }
+            });
+            render();
+        }
+
+        function setMeal(meal) {
+            currentMeal = meal;
+            ['desayuno','comida','merienda','cena'].forEach(m => {
+                const btn = $('btn-'+m);
+                if (m === meal) {
+                    btn.className = 'flex-1 py-2 px-3 brutal-btn btn-accent text-[10px] uppercase';
+                    btn.style.color = 'white';
+                } else {
+                    btn.className = 'flex-1 py-2 px-3 brutal-btn bg-white text-[10px] uppercase';
                     btn.style.color = 'var(--border-color)';
                 }
             });
@@ -311,7 +348,13 @@
 
         function render() {
             // Filter by area
-            const areaResidents = allResidents.filter(p => (p.area_convivencia || 'UAD') === currentArea);
+            let areaResidents = allResidents.filter(p => (p.area_convivencia || 'UAD') === currentArea);
+            
+            // Filter by meal availability
+            areaResidents = areaResidents.filter(p => {
+                const disp = parseDisponibilidad(p.disponibilidad_alimentacion);
+                return disp[currentMeal] === true;
+            });
             
             const active = areaResidents.filter(p => !discardedSet.has(p.id));
             const completed = areaResidents.filter(p => discardedSet.has(p.id));

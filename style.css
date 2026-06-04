@@ -497,23 +497,40 @@ body {
 .diet-counters {
     display: flex;
     justify-content: space-around;
-    padding: 8px 5px;
+    align-items: center;
+    padding: 12px 10px;
+    gap: 10px;
 }
 .diet-count {
+    flex: 1;
     background: white;
-    color: var(--border-color);
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: bold;
-    border: 1px solid var(--border-color);
-    box-shadow: 1px 1px 0 var(--gray);
+    color: var(--gray-dark);
+    padding: 8px 4px;
+    border-radius: 8px;
+    text-align: center;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: 2px 2px 0 var(--gray);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 .diet-emoji {
-    font-size: 16px;
-    margin-right: 2px;
+    font-size: 24px;
+    margin-bottom: 2px;
 }
-
+.diet-label {
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--border-color);
+    margin-bottom: 2px;
+}
+.diet-number {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--primary);
+}
 .form-select, .form-input {
     width: 100%;
     padding: 8px;
