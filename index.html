@@ -32,9 +32,10 @@
         </div>
         
         <div id="function-menu" class="collapsible-content open">
-            <div class="grid grid-cols-4 gap-2 pt-2 pb-2">
+            <div class="grid grid-cols-5 gap-2 pt-2 pb-2">
                 <button onclick="setFunc(5)" id="btn-5" class="py-2.5 brutal-btn btn-primary">F5<span class="block text-[8px]">UCC</span></button>
                 <button onclick="setFunc(6)" id="btn-6" class="py-2.5 brutal-btn bg-gray-100" style="color: var(--border-color);">F6<span class="block text-[8px]">UCC</span></button>
+                <button onclick="setFunc(7)" id="btn-7" class="py-2.5 brutal-btn bg-gray-100" style="color: var(--border-color);">F7<span class="block text-[8px]">UAD</span></button>
                 <button onclick="setFunc(8)" id="btn-8" class="py-2.5 brutal-btn bg-gray-100" style="color: var(--border-color);">F8<span class="block text-[8px]">UAD</span></button>
                 <button onclick="setFunc(9)" id="btn-9" class="py-2.5 brutal-btn bg-gray-100" style="color: var(--border-color);">F9<span class="block text-[8px]">UAD</span></button>
             </div>
@@ -65,6 +66,60 @@
         </div>
     </footer>
 
+    <!-- MODAL ALIMENTACION -->
+    <div id="resident-modal" class="modal-backdrop">
+        <div class="modal-content brutal-border">
+            <div class="p-3 border-b-2 flex justify-between items-center" style="background: var(--primary); border-bottom-color: var(--border-color);">
+                <h2 id="modal-title" class="font-bold text-white text-sm uppercase">RESIDENTE</h2>
+                <button onclick="closeModal()" class="text-white font-bold bg-transparent px-2 text-lg">X</button>
+            </div>
+            <div class="p-3">
+                <h3 class="font-bold text-[11px] mb-2" style="color: var(--secondary);">🍽️ ALIMENTACIÓN Y CONVIVENCIA</h3>
+                
+                <div class="mb-3">
+                    <label class="form-label">Área de Convivencia</label>
+                    <select id="modal-area" class="form-select brutal-border" onchange="saveModalData()">
+                        <option value="UAD">UAD</option>
+                        <option value="UCC">UCC</option>
+                        <option value="PASILLO">PASILLO</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Dieta</label>
+                    <select id="modal-dieta" class="form-select brutal-border" onchange="saveModalData()">
+                        <option value="NORMAL">NORMAL</option>
+                        <option value="BLANDA">BLANDA</option>
+                        <option value="TURMIX">TURMIX</option>
+                    </select>
+                </div>
+
+                <div class="mb-3 flex items-center justify-between">
+                    <label class="form-label mb-0">Requiere Espesante</label>
+                    <button id="modal-espesante" class="toggle-btn" style="flex: 0 0 60px;" onclick="toggleEspesante()">NO</button>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Menú Asignado</label>
+                    <div id="modal-menu-display" class="menu-display">
+                        Cargando...
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Disponibilidad (Asistencia)</label>
+                    <div class="grid grid-cols-4 gap-1">
+                        <button id="chk-desayuno" class="check-btn" onclick="toggleCheck('desayuno')">DES</button>
+                        <button id="chk-comida" class="check-btn" onclick="toggleCheck('comida')">COM</button>
+                        <button id="chk-merienda" class="check-btn" onclick="toggleCheck('merienda')">MER</button>
+                        <button id="chk-cena" class="check-btn" onclick="toggleCheck('cena')">CEN</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="alimentacion.js"></script>
     <script>
         let DB = {};
 
@@ -124,6 +179,89 @@
         function toggleMenu(id) {
             const menu = $(id);
             menu.classList.toggle('open');
+        }
+
+        let currentModalResident = null;
+        let currentDispObj = {};
+
+        function openModal(p) {
+            currentModalResident = p;
+            $('modal-title').textContent = `${p.room} - ${p.name}`;
+            
+            // Populate fields
+            $('modal-area').value = p.area_convivencia || 'UAD';
+            $('modal-dieta').value = p.dieta || 'NORMAL';
+            
+            const reqEspesante = p.espesante || false;
+            const btnEsp = $('modal-espesante');
+            if (reqEspesante) {
+                btnEsp.classList.add('active');
+                btnEsp.textContent = 'SÍ';
+            } else {
+                btnEsp.classList.remove('active');
+                btnEsp.textContent = 'NO';
+            }
+            
+            currentDispObj = parseDisponibilidad(p.disponibilidad_alimentacion);
+            updateChecksUI();
+            updateMenuUI();
+
+            $('resident-modal').classList.add('open');
+        }
+
+        function closeModal() {
+            $('resident-modal').classList.remove('open');
+            currentModalResident = null;
+        }
+
+        function toggleEspesante() {
+            if (!currentModalResident) return;
+            currentModalResident.espesante = !currentModalResident.espesante;
+            const btnEsp = $('modal-espesante');
+            if (currentModalResident.espesante) {
+                btnEsp.classList.add('active');
+                btnEsp.textContent = 'SÍ';
+            } else {
+                btnEsp.classList.remove('active');
+                btnEsp.textContent = 'NO';
+            }
+        }
+
+        function toggleCheck(meal) {
+            if (!currentModalResident) return;
+            currentDispObj[meal] = !currentDispObj[meal];
+            currentModalResident.disponibilidad_alimentacion = encodeDisponibilidad(currentDispObj);
+            updateChecksUI();
+        }
+
+        function updateChecksUI() {
+            const meals = ['desayuno', 'comida', 'merienda', 'cena'];
+            meals.forEach(m => {
+                const btn = $('chk-' + m);
+                if (currentDispObj[m]) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function saveModalData() {
+            if (!currentModalResident) return;
+            currentModalResident.area_convivencia = $('modal-area').value;
+            currentModalResident.dieta = $('modal-dieta').value;
+            updateMenuUI();
+        }
+
+        function updateMenuUI() {
+            if (!currentModalResident) return;
+            const menu = getMenu(currentModalResident.dieta);
+            $('modal-menu-display').innerHTML = `
+                <b>Desayuno:</b> ${menu.Desayuno}<br>
+                <b>Comida:</b> ${menu.Comida}<br>
+                <b>Merienda:</b> ${menu.Merienda}<br>
+                <b>Cena:</b> ${menu.Cena}
+            `;
         }
 
         function createCard(p, isDone, day) {
@@ -237,6 +375,12 @@
             const threshold = 80;
             let currentAnimation = null;
             
+            div.addEventListener('click', (e) => {
+                if (!isSwiping && e.target !== pooBtn) {
+                    openModal(p);
+                }
+            });
+
             div.addEventListener('touchstart', (e) => {
                 if (e.target === pooBtn) return;
                 startX = e.touches[0].clientX;
@@ -400,7 +544,7 @@
         function setFunc(f) {
             saveAllData();
             func = f;
-            [5,6,8,9].forEach(n => {
+            [5,6,7,8,9].forEach(n => {
                 $('btn-'+n).className = `py-2.5 brutal-btn ${n===f?'btn-primary':'bg-gray-100'}`;
                 if (n !== f) $('btn-'+n).style.color = 'var(--border-color)';
             });
