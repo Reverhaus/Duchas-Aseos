@@ -363,4 +363,145 @@
       "room": "214",
       "name": "GILLIAM KING",
       "days": ["M", "J", "S"],
-      "p
+      "p": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "UAD",
+      "disponibilidad_alimentacion": "1*1*1*1"
+    }
+  ],
+  "9": [
+    {
+      "id": "9-215-1",
+      "room": "215",
+      "name": "BRUCE GAUNTLET",
+      "days": ["M", "J", "S"],
+      "p": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "UAD/PASILLO (MERIENDA*CENA)",
+      "disponibilidad_alimentacion": "1*1*1*1"
+    },
+    {
+      "id": "9-215-2",
+      "room": "215",
+      "name": "JESUS MONTERO",
+      "days": ["L", "X", "V"],
+      "p": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "UAD/PASILLO (MERIENDA*CENA)",
+      "disponibilidad_alimentacion": "1*1*1*1"
+    },
+    {
+      "id": "9-217-1",
+      "room": "217",
+      "name": "LEONOR ESPIN",
+      "days": ["L", "X"],
+      "p": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "UCC",
+      "disponibilidad_alimentacion": "1*1*1*1"
+    },
+    {
+      "id": "9-217-2",
+      "room": "217",
+      "name": "MARI PAZ MOURIÑIGO",
+      "days": ["M", "J", "S"],
+      "p": 3,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UAD/PASILLO (MERIENDA*CENA)",
+      "disponibilidad_alimentacion": "1*1*1*1"
+    },
+    {
+      "id": "9-218-2",
+      "room": "218",
+      "name": "EMILIANO RUIZ",
+      "days": ["L", "X", "V"],
+      "p": 3,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_alimentacion": "1*1*1*1"
+    },
+    {
+      "id": "9-219-1",
+      "room": "219",
+      "name": "VICENTE ALBADALEJO",
+      "days": ["L", "X", "V"],
+      "p": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "UAD",
+      "disponibilidad_alimentacion": "1*1*1*1"
+    },
+    {
+      "id": "9-221-1",
+      "room": "221",
+      "name": "ESTEBAN VERDÚ",
+      "days": ["M", "J", "S"],
+      "p": 1,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_alimentacion": "1*1*1*1"
+    },
+    {
+      "id": "9-223-1",
+      "room": "223",
+      "name": "M. CARMEN DOMINGUEZ",
+      "days": ["M", "J", "S"],
+      "p": 1,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_alimentacion": "1*1*1*1"
+    },
+    {
+      "id": "9-225-1",
+      "room": "225",
+      "name": "CELEDONIO PACHECO",
+      "days": ["M", "J", "S"],
+      "p": 2,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "SALONES",
+      "disponibilidad_alimentacion": "0*0*0*0"
+    },
+    {
+      "id": "9-225-2",
+      "room": "225",
+      "name": "MANUEL ESCOLANO",
+      "days": ["M", "S"],
+      "p": 2,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "SALONES",
+      "disponibilidad_alimentacion": "0*0*0*0"
+    },
+    {
+      "id": "9-221-2",
+      "room": "221",
+      "name": "MARCELO VICENTE",
+      "days": ["L", "X", "V", "D"],
+      "p": 3,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_alimentacion": "1*1*1*1"
+    },
+    {
+      "id": "9-222-1",
+      "room": "222",
+      "name": "JOSEFA GUILLEN",
+      "days": ["M", "J", "S"],
+      "p": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "UAD",
+      "disponibilidad_alimentacion": "1*1*1*1"
+    }
+  ]
+}
