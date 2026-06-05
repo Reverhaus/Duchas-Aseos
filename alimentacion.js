@@ -1,71 +1,70 @@
 /**
  * alimentacion.js
  * Módulo de Alimentación y Convivencia
+ *
+ * Compatible con residentes.json v2.0
+ * Las comidas se identifican siempre en minúscula: desayuno, comida, merienda, cena
  */
+
+// ─── Reglas de menú por tipo de dieta ────────────────────────────────────────
 
 const DIET_RULES = {
     "TURMIX": {
-        "Desayuno": "Gachas",
-        "Comida": "Puré",
-        "Merienda": "Compota",
-        "Cena": "Puré"
+        "desayuno": "Gachas",
+        "comida":   "Puré",
+        "merienda": "Compota",
+        "cena":     "Puré"
     },
     "BLANDA": {
-        "Desayuno": "Café con tostadas",
-        "Comida": "Menú normal",
-        "Merienda": "Café con galletas",
-        "Cena": "Menú normal"
+        "desayuno": "Café con tostadas",
+        "comida":   "Menú normal",
+        "merienda": "Café con galletas",
+        "cena":     "Menú normal"
     },
-    "NORMAL": {
-        "Desayuno": "Normal",
-        "Comida": "Normal",
-        "Merienda": "Normal",
-        "Cena": "Normal"
-    }
+
 };
 
 /**
- * Obtiene el menú basado en la dieta del residente
- * @param {string} dieta - "TURMIX", "BLANDA" o "NORMAL"
- * @returns {object} Objeto con las 4 comidas
+ * Obtiene el menú de un residente para una comida concreta.
+ * @param {string} dieta   - "TURMIX" or "BLANDA"
+ * @param {string} comida  - "desayuno" | "comida" | "merienda" | "cena"
+ * @returns {string} Descripción del plato
  */
-function getMenu(dieta) {
-    if (!dieta || !DIET_RULES[dieta]) {
-        return DIET_RULES["NORMAL"];
-    }
-    return DIET_RULES[dieta];
+function getMenu(dieta, comida) {
+    const regla = DIET_RULES[dieta] || DIET_RULES["BLANDA"];
+    return comida ? (regla[comida] || '—') : regla;
 }
 
+// ─── Acceso a disponibilidad de comidas ──────────────────────────────────────
+
 /**
- * Parsea el string de disponibilidad a objeto de booleanos
- * @param {string} dispStr - Ej: "1*1*0*1"
- * @returns {object} { desayuno, comida, merienda, cena }
+ * Devuelve el objeto de disponibilidad de comidas de un residente.
+ * Si el campo no existe o está mal formado, devuelve todas las comidas activas.
+ *
+ * El campo disponibilidad_comidas en residentes.json tiene la forma:
+ *   { desayuno: true, comida: false, merienda: true, cena: true }
+ *
+ * @param {object} residente - Objeto residente normalizado
+ * @returns {{ desayuno: boolean, comida: boolean, merienda: boolean, cena: boolean }}
  */
-function parseDisponibilidad(dispStr) {
-    const defaultDisp = { desayuno: true, comida: true, merienda: true, cena: true };
-    if (!dispStr) return defaultDisp;
-
-    const regex = /^[01]\*[01]\*[01]\*[01]$/;
-    if (!regex.test(dispStr)) return defaultDisp;
-
-    const parts = dispStr.split('*');
+function getDisponibilidad(residente) {
+    const fallback = { desayuno: true, comida: true, merienda: true, cena: true };
+    const disp = residente.disponibilidad_comidas;
+    if (!disp || typeof disp !== 'object') return fallback;
     return {
-        desayuno: parts[0] === '1',
-        comida: parts[1] === '1',
-        merienda: parts[2] === '1',
-        cena: parts[3] === '1'
+        desayuno: disp.desayuno === true,
+        comida:   disp.comida   === true,
+        merienda: disp.merienda === true,
+        cena:     disp.cena     === true
     };
 }
 
 /**
- * Codifica el objeto de booleanos al string de disponibilidad
- * @param {object} dispObj - { desayuno, comida, merienda, cena }
- * @returns {string} Ej: "1*1*0*1"
+ * Comprueba si un residente recibe una comida concreta en su área.
+ * @param {object} residente - Objeto residente normalizado
+ * @param {string} comida    - "desayuno" | "comida" | "merienda" | "cena"
+ * @returns {boolean}
  */
-function encodeDisponibilidad(dispObj) {
-    const p1 = dispObj.desayuno ? '1' : '0';
-    const p2 = dispObj.comida ? '1' : '0';
-    const p3 = dispObj.merienda ? '1' : '0';
-    const p4 = dispObj.cena ? '1' : '0';
-    return `${p1}*${p2}*${p3}*${p4}`;
+function recibeComida(residente, comida) {
+    return getDisponibilidad(residente)[comida] === true;
 }

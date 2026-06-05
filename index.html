@@ -78,7 +78,23 @@
                 const basePath = window.location.pathname.includes('Duchas-Aseos') ? '/Duchas-Aseos' : '';
                 const response = await fetch(basePath + '/residentes.json');
                 if (!response.ok) throw new Error('HTTP ' + response.status);
-                DB = await response.json();
+                const raw = await response.json();
+                // Filtrar _meta y normalizar campos al formato interno
+                DB = {};
+                Object.entries(raw).forEach(([key, value]) => {
+                    if (key === '_meta') return; // saltar metadatos
+                    DB[key] = value.map(r => ({
+                        id: r.id,
+                        room: r.habitacion,        // habitacion → room
+                        name: r.nombre,            // nombre → name
+                        days: r.dias_ducha,        // dias_ducha → days
+                        p: r.prioridad,            // prioridad → p
+                        dieta: r.dieta,
+                        espesante: r.espesante,
+                        area_convivencia: r.area_convivencia,
+                        disponibilidad_comidas: r.disponibilidad_comidas
+                    }));
+                });
                 console.log('✅ Residentes cargados:', Object.keys(DB).length, 'funciones');
                 render();
             } catch (error) {

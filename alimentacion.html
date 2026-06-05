@@ -19,27 +19,28 @@
             <button onclick="window.location.href='index.html'" class="header-toggle-btn flex-1 brutal-btn bg-white" style="color: var(--border-color);">
                 🚿 ASEO
             </button>
-            <button onclick="toggleMenu('area-menu')" class="header-toggle-btn flex-1 brutal-btn bg-white" style="color: var(--border-color);">
+            <button onclick="toggleMenu('controls-menu')" class="header-toggle-btn flex-1 brutal-btn bg-white" style="color: var(--border-color);">
                 📋 ÁREAS
             </button>
             <button onclick="clearAlimentacionData()" class="clear-data-btn">🗑️</button>
         </div>
         
-        <div id="area-menu" class="collapsible-content open">
-            <div class="grid grid-cols-3 gap-2 pt-2 pb-2">
-                <button onclick="setArea('UAD')" id="btn-UAD" class="py-2.5 brutal-btn btn-primary">UAD</button>
-                <button onclick="setArea('UCC')" id="btn-UCC" class="py-2.5 brutal-btn bg-gray-100" style="color: var(--border-color);">UCC</button>
-                <button onclick="setArea('PASILLO')" id="btn-PASILLO" class="py-2.5 brutal-btn bg-gray-100" style="color: var(--border-color);">PASILLO</button>
+        <div id="controls-menu" class="collapsible-content open">
+            <div id="area-menu" class="">
+                <div class="grid grid-cols-3 gap-2 pt-2 pb-2">
+                    <button onclick="setArea('UAD')" id="btn-UAD" class="py-2.5 brutal-btn btn-primary">UAD</button>
+                    <button onclick="setArea('UCC')" id="btn-UCC" class="py-2.5 brutal-btn bg-gray-100" style="color: var(--border-color);">UCC</button>
+                    <button onclick="setArea('PASILLO')" id="btn-PASILLO" class="py-2.5 brutal-btn bg-gray-100" style="color: var(--border-color);">PASILLO</button>
+                </div>
             </div>
-        </div>
-        
-        <div id="meal-menu" class="border-t bg-gray-100 p-3" style="border-color: var(--border-color);">
-            <input type="range" min="0" max="3" value="0" class="w-full custom-slider" id="meal-slider" oninput="handleSliderChange(this.value)">
-            <div class="flex justify-between text-[9px] font-bold mt-2 uppercase text-gray-400">
-                <span id="lbl-0" style="color: var(--primary);">Desayuno</span>
-                <span id="lbl-1">Comida</span>
-                <span id="lbl-2">Merienda</span>
-                <span id="lbl-3">Cena</span>
+            <div id="meal-menu" class="border-t bg-gray-100 p-3" style="border-color: var(--border-color);">
+                <input type="range" min="0" max="3" value="0" class="w-full custom-slider" id="meal-slider" oninput="handleSliderChange(this.value)">
+                <div class="flex justify-between text-[9px] font-bold mt-2 uppercase text-gray-400">
+                    <span id="lbl-0" style="color: var(--primary);">Desayuno</span>
+                    <span id="lbl-1">Comida</span>
+                    <span id="lbl-2">Merienda</span>
+                    <span id="lbl-3">Cena</span>
+                </div>
             </div>
         </div>
     </header>
@@ -55,14 +56,6 @@
     <footer class="fixed bottom-0 w-full z-20" style="background: var(--secondary); border-top: var(--border-width) solid var(--border-color);">
         <div class="diet-counters flex justify-around p-2 gap-2">
             
-            <div class="diet-count flex-1 bg-white p-2 rounded-lg brutal-border flex items-center justify-center gap-2">
-                <div class="flex flex-col items-center">
-                    <span class="text-3xl leading-none">🍗</span>
-                    <span class="text-[9px] font-black uppercase text-gray-500 mt-1">Normal</span>
-                </div>
-                <span id="count-normal" class="text-2xl font-black" style="color: var(--primary);">0</span>
-            </div>
-
             <div class="diet-count flex-1 bg-white p-2 rounded-lg brutal-border flex items-center justify-center gap-2">
                 <div class="flex flex-col items-center">
                     <span class="text-3xl leading-none">🍞</span>
@@ -156,12 +149,25 @@
                 const basePath = window.location.pathname.includes('Duchas-Aseos') ? '/Duchas-Aseos' : '';
                 const response = await fetch(basePath + '/residentes.json');
                 if (!response.ok) throw new Error('HTTP ' + response.status);
-                const db = await response.json();
+                const raw = await response.json();
                 
-                // Flatten all arrays from 5,6,7,8,9
+                // Aplanar todas las funciones (5-9), ignorando _meta
                 allResidents = [];
-                Object.values(db).forEach(list => {
-                    allResidents = allResidents.concat(list);
+                Object.entries(raw).forEach(([key, value]) => {
+                    if (key === '_meta') return; // saltar metadatos
+                    // Normalizar campos al formato interno
+                    const normalized = value.map(r => ({
+                        id: r.id,
+                        room: r.habitacion,
+                        name: r.nombre,
+                        days: r.dias_ducha,
+                        prioridad: r.prioridad,
+                        dieta: r.dieta,
+                        espesante: r.espesante,
+                        area_convivencia: r.area_convivencia,
+                        disponibilidad_comidas: r.disponibilidad_comidas
+                    }));
+                    allResidents = allResidents.concat(normalized);
                 });
                 
                 console.log('✅ Residentes cargados para alimentación:', allResidents.length);
@@ -172,16 +178,17 @@
             }
         }
 
+        // getDietEmoji y getDietColor viven en alimentacion.js
         function getDietEmoji(dieta) {
             if (dieta === 'TURMIX') return '🥣';
             if (dieta === 'BLANDA') return '🍞';
-            return '🍗'; // NORMAL o default
+            return '🍗';
         }
 
         function getDietColor(dieta) {
-            if (dieta === 'TURMIX') return 'var(--primary)'; // yellow
-            if (dieta === 'BLANDA') return 'var(--accent)'; // green
-            return 'var(--secondary)'; // orange
+            if (dieta === 'TURMIX') return 'var(--primary)';
+            if (dieta === 'BLANDA') return 'var(--accent)';
+            return 'var(--secondary)';
         }
 
         function createCard(p, isDone) {
@@ -222,11 +229,18 @@
             nameEl.textContent = p.name;
             infoDiv.appendChild(nameEl);
             
+            // Línea 1: tipo de dieta + espesante
             const dietDiv = document.createElement('div');
             dietDiv.className = 'text-xs font-bold mt-0.5 uppercase';
             dietDiv.style.color = getDietColor(p.dieta);
-            dietDiv.textContent = `${p.dieta || 'NORMAL'}${p.espesante ? ' + ESPESANTE' : ''}`;
+            dietDiv.textContent = `${p.dieta || 'BLANDA'}${p.espesante ? ' + ESPESANTE' : ''}`;
             infoDiv.appendChild(dietDiv);
+
+            // Línea 2: plato concreto para la comida actual (de alimentacion.js)
+            const menuEl = document.createElement('div');
+            menuEl.className = 'text-[10px] mt-0.5 text-gray-400 italic';
+            menuEl.textContent = getMenu(p.dieta, currentMeal);
+            infoDiv.appendChild(menuEl);
             
             div.appendChild(infoDiv);
             
@@ -360,14 +374,11 @@
         }
 
         function render() {
-            // Filter by area
+            // Filtrar por área de convivencia
             let areaResidents = allResidents.filter(p => (p.area_convivencia || 'UAD') === currentArea);
             
-            // Filter by meal availability
-            areaResidents = areaResidents.filter(p => {
-                const disp = parseDisponibilidad(p.disponibilidad_alimentacion);
-                return disp[currentMeal] === true;
-            });
+            // Filtrar por disponibilidad usando recibeComida() de alimentacion.js
+            areaResidents = areaResidents.filter(p => recibeComida(p, currentMeal));
             
             const active = areaResidents.filter(p => !discardedSet.has(p.id));
             const completed = areaResidents.filter(p => discardedSet.has(p.id));
@@ -400,18 +411,15 @@
             }
 
             // Update Counters based on ACTIVE residents
-            let normalCount = 0;
             let blandaCount = 0;
             let turmixCount = 0;
             
             active.forEach(p => {
-                const dieta = p.dieta || 'NORMAL';
+                const dieta = p.dieta || 'BLANDA';
                 if (dieta === 'TURMIX') turmixCount++;
-                else if (dieta === 'BLANDA') blandaCount++;
-                else normalCount++;
+                else blandaCount++;
             });
-
-            $('count-normal').textContent = normalCount;
+            
             $('count-blanda').textContent = blandaCount;
             $('count-turmix').textContent = turmixCount;
         }
