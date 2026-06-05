@@ -11,7 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Roboto:wght@400;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
 </head>
 
 <body class="h-screen flex flex-col overflow-hidden">
@@ -63,6 +63,10 @@
 
     <footer class="fixed bottom-0 w-full z-20"
         style="background: var(--secondary); border-top: var(--border-width) solid var(--border-color);">
+        <button onclick="window.location.href='index.html'" class="absolute right-0 brutal-btn bg-white z-[60]"
+            style="bottom: 100%; padding: 6px 12px; border-bottom: none; border-right: none; color: var(--border-color); box-shadow: -2px -2px 0 var(--gray);">
+            🚿 ASEO
+        </button>
         <div class="diet-counters flex justify-around p-2 gap-2">
 
             <div class="diet-count flex-1 bg-white p-2 rounded-lg brutal-border flex items-center justify-center gap-2">
@@ -83,10 +87,6 @@
 
         </div>
     </footer>
-
-    <button onclick="window.location.href='index.html'" class="floating-btn" title="Ir a Aseo">
-        🚿
-    </button>
 
     <script src="alimentacion.js"></script>
     <script>
