@@ -1,51 +1,807 @@
 {
+  "_meta": {
+    "descripcion": "Base de datos de residentes para gestión de aseo y alimentación",
+    "version": "2.0",
+    "campos": {
+      "id": "Identificador único: funcion-habitacion-cama",
+      "habitacion": "Número de habitación del residente",
+      "nombre": "Nombre completo del residente",
+      "dias_ducha": "Días de la semana que corresponde ducha (L=Lunes, M=Martes, X=Miércoles, J=Jueves, V=Viernes, S=Sábado, D=Domingo)",
+      "prioridad": "Nivel de prioridad de aseo: 1=Máxima (antes del desayuno), 2=Alta (antes de comida), 3=Normal",
+      "dieta": "Tipo de dieta: NORMAL, BLANDA o TURMIX",
+      "espesante": "Si necesita espesante en los líquidos",
+      "area_convivencia": "Área donde realiza las comidas: UAD, UCC o PASILLO",
+      "disponibilidad_comidas": "Qué comidas recibe el residente en el área de convivencia"
+    },
+    "funciones": {
+      "F5": "UCC",
+      "F6": "UCC",
+      "F7": "UAD",
+      "F8": "UAD",
+      "F9": "UAD"
+    }
+  },
+
   "5": [
-    {"id":"5-201-1","room":"201","name":"MARISA RODRIGUEZ","days":["L","X","V"],"p":3},
-    {"id":"5-202-1","room":"202","name":"ALICIA GIMENEZ","days":["L","X","V","D"],"p":1},
-    {"id":"5-202-2","room":"202","name":"DOLORES ONTENIENTE","days":["M","J","S"],"p":2},
-    {"id":"5-204-1","room":"204","name":"FILOMENA SAEZ","days":["L","X","V"],"p":3},
-    {"id":"5-204-2","room":"204","name":"LUCIA ROZAS","days":["M","J","S"],"p":2},
-    {"id":"5-203-1","room":"203","name":"ANTONIA HERNANDEZ","days":["M","J","S"],"p":3},
-    {"id":"5-208-1","room":"208","name":"VICENTA BLASCO","days":["L","X","V"],"p":2},
-    {"id":"5-208-2","room":"208","name":"ISABEL SANCHEZ","days":["L","X","V"],"p":3}
+    {
+      "id": "5-201-1",
+      "habitacion": "201",
+      "nombre": "MARISA RODRIGUEZ",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "5-202-1",
+      "habitacion": "202",
+      "nombre": "ALICIA GIMENEZ",
+      "dias_ducha": ["L", "X", "V", "D"],
+      "prioridad": 1,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": false,
+        "cena": true
+      }
+    },
+    {
+      "id": "5-202-2",
+      "habitacion": "202",
+      "nombre": "DOLORES ONTENIENTE",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 2,
+      "dieta": "NORMAL",
+      "espesante": false,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": false,
+        "merienda": false,
+        "cena": false
+      }
+    },
+    {
+      "id": "5-204-1",
+      "habitacion": "204",
+      "nombre": "FILOMENA SAEZ",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": false,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": false,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "5-204-2",
+      "habitacion": "204",
+      "nombre": "LUCIA ROZAS",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 2,
+      "dieta": "BLANDA",
+      "espesante": true,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": false
+      }
+    },
+    {
+      "id": "5-203-1",
+      "habitacion": "203",
+      "nombre": "ANTONIA HERNANDEZ",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "NORMAL",
+      "espesante": false,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "5-208-1",
+      "habitacion": "208",
+      "nombre": "VICENTA BLASCO",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 2,
+      "dieta": "TURMIX",
+      "espesante": false,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "5-208-2",
+      "habitacion": "208",
+      "nombre": "ISABEL SANCHEZ",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": false,
+        "cena": true
+      }
+    }
   ],
+
   "6": [
-    {"id":"6-201-1","room":"201","name":"INGER BRUCKSCHEN","days":["M","J","S"],"p":3},
-    {"id":"6-206-1","room":"206","name":"GUDRUM VICENT","days":["L","X","V"],"p":3},
-    {"id":"6-206-2","room":"206","name":"MARÍA LUISE GREIN","days":["M","J","S"],"p":3},
-    {"id":"6-207-1","room":"207","name":"ELENA DÍAZ","days":["L","X","V"],"p":3},
-    {"id":"6-209-2","room":"209","name":"MARTIN ROY","days":["L","X","J"],"p":3},
-    {"id":"6-211-1","room":"211","name":"JOSEFA GARCIA","days":["M","J","S"],"p":3},
-    {"id":"6-211-2","room":"211","name":"MANUELA GARCIA","days":["L","X","V"],"p":3}
+    {
+      "id": "6-201-1",
+      "habitacion": "201",
+      "nombre": "INGER BRUCKSCHEN",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "6-206-1",
+      "habitacion": "206",
+      "nombre": "GUDRUM VICENT",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": false,
+        "cena": true
+      }
+    },
+    {
+      "id": "6-206-2",
+      "habitacion": "206",
+      "nombre": "MARÍA LUISE GREIN",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "NORMAL",
+      "espesante": false,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": false,
+        "merienda": false,
+        "cena": false
+      }
+    },
+    {
+      "id": "6-207-1",
+      "habitacion": "207",
+      "nombre": "ELENA DÍAZ",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": false,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "6-209-2",
+      "habitacion": "209",
+      "nombre": "MARTIN ROY",
+      "dias_ducha": ["L", "X", "J"],
+      "prioridad": 3,
+      "dieta": "BLANDA",
+      "espesante": true,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": false
+      }
+    },
+    {
+      "id": "6-211-1",
+      "habitacion": "211",
+      "nombre": "JOSEFA GARCIA",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "NORMAL",
+      "espesante": false,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "6-211-2",
+      "habitacion": "211",
+      "nombre": "MANUELA GARCIA",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    }
   ],
+
+  "7": [
+    {
+      "id": "7-224-1",
+      "habitacion": "224",
+      "nombre": "CARMEN SEVILLA",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "7-224-2",
+      "habitacion": "224",
+      "nombre": "ROSA MARÍA FERNANDEZ",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": false,
+        "cena": true
+      }
+    },
+    {
+      "id": "7-226-1",
+      "habitacion": "226",
+      "nombre": "JOSEFA MARTINEZ MOYA",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "NORMAL",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": false,
+        "merienda": false,
+        "cena": false
+      }
+    },
+    {
+      "id": "7-226-2",
+      "habitacion": "226",
+      "nombre": "ROSARIO NAVARRO",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": false,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": false,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "7-219-1",
+      "habitacion": "219",
+      "nombre": "CARLOS MARQUINA",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "BLANDA",
+      "espesante": true,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": false
+      }
+    },
+    {
+      "id": "7-203-1",
+      "habitacion": "203",
+      "nombre": "JOSE MOLLA",
+      "dias_ducha": ["L", "M", "X", "J", "V", "S"],
+      "prioridad": 3,
+      "dieta": "NORMAL",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "7-212-1",
+      "habitacion": "212",
+      "nombre": "MARILUZ MARTINEZ",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": false,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    }
+  ],
+
   "8": [
-    {"id":"8-205-1","room":"205","name":"FERNANDO ROMÁN","days":["M","J","S"],"p":3},
-    {"id":"8-205-2","room":"205","name":"LUIS LÁZARO","days":["L","X","S"],"p":2},
-    {"id":"8-207-1","room":"207","name":"TERESA CANO","days":["L","X","V"],"p":3},
-    {"id":"8-227-1","room":"227","name":"MONCHI MARTINEZ","days":["M","J","S"],"p":2},
-    {"id":"8-210-1","room":"210","name":"FERNANDA DE MIGUEL","days":["L","X","V"],"p":2},
-    {"id":"8-210-2","room":"210","name":"PILAR MARCOS","days":["M","J","S"],"p":2},
-    {"id":"8-220-1","room":"220","name":"CARMEN TORRES","days":["L","X","V"],"p":3},
-    {"id":"8-214-1","room":"214","name":"CARMEN BELCHI","days":["M","J","S"],"p":3},
-    {"id":"8-213-1","room":"213","name":"ROSA BELLO","days":["L","X","V"],"p":3},
-    {"id":"8-213-2","room":"213","name":"CARMEN CRESPO","days":["M","J","S"],"p":3},
-    {"id":"8-212-1","room":"212","name":"CRUZ JIMENEZ","days":["L","X","V"],"p":3},
-    {"id":"8-216-1","room":"216","name":"FRANCISCO MARTINEZ","days":["L","X","V"],"p":1},
-    {"id":"8-214-2","room":"214","name":"GILLIAM KING","days":["M","J","S"],"p":3}
+    {
+      "id": "8-205-1",
+      "habitacion": "205",
+      "nombre": "FERNANDO ROMÁN",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "8-205-2",
+      "habitacion": "205",
+      "nombre": "LUIS LÁZARO",
+      "dias_ducha": ["L", "X", "S"],
+      "prioridad": 2,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": false,
+        "cena": true
+      }
+    },
+    {
+      "id": "8-207-1",
+      "habitacion": "207",
+      "nombre": "TERESA CANO",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "NORMAL",
+      "espesante": false,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": false,
+        "merienda": false,
+        "cena": false
+      }
+    },
+    {
+      "id": "8-227-1",
+      "habitacion": "227",
+      "nombre": "MONCHI MARTINEZ",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 2,
+      "dieta": "TURMIX",
+      "espesante": false,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": false,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "8-210-1",
+      "habitacion": "210",
+      "nombre": "FERNANDA DE MIGUEL",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 2,
+      "dieta": "BLANDA",
+      "espesante": true,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": false
+      }
+    },
+    {
+      "id": "8-210-2",
+      "habitacion": "210",
+      "nombre": "PILAR MARCOS",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 2,
+      "dieta": "NORMAL",
+      "espesante": false,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "8-220-1",
+      "habitacion": "220",
+      "nombre": "CARMEN TORRES",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": false,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "8-214-1",
+      "habitacion": "214",
+      "nombre": "CARMEN BELCHI",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": false,
+        "cena": true
+      }
+    },
+    {
+      "id": "8-213-1",
+      "habitacion": "213",
+      "nombre": "ROSA BELLO",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "NORMAL",
+      "espesante": true,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": false,
+        "merienda": false,
+        "cena": false
+      }
+    },
+    {
+      "id": "8-213-2",
+      "habitacion": "213",
+      "nombre": "CARMEN CRESPO",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": false,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": false,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "8-212-1",
+      "habitacion": "212",
+      "nombre": "CRUZ JIMENEZ",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": false
+      }
+    },
+    {
+      "id": "8-216-1",
+      "habitacion": "216",
+      "nombre": "FRANCISCO MARTINEZ",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 1,
+      "dieta": "NORMAL",
+      "espesante": false,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "8-214-2",
+      "habitacion": "214",
+      "nombre": "GILLIAM KING",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    }
   ],
+
   "9": [
-    {"id":"9-215-1","room":"215","name":"BRUCE GAUNTLET","days":["M","J","S"],"p":3},
-    {"id":"9-215-2","room":"215","name":"JESUS MONTERO","days":["L","X","V"],"p":3},
-    {"id":"9-217-1","room":"217","name":"LEONOR ESPIN","days":["L","X"],"p":3},
-    {"id":"9-217-2","room":"217","name":"MARI PAZ MOURIÑIGO","days":["M","J","S"],"p":3},
-    {"id":"9-216-2","room":"216","name":"ANDRÉS REINA","days":["J","D"],"p":3},
-    {"id":"9-218-2","room":"218","name":"EMILIANO RUIZ","days":["L","X","V"],"p":3},
-    {"id":"9-219-1","room":"219","name":"VICENTE ALBADALEJO","days":["L","X","V"],"p":3},
-    {"id":"9-221-1","room":"221","name":"ESTEBAN VERDÚ","days":["M","J","S"],"p":1},
-    {"id":"9-223-1","room":"223","name":"M. CARMEN DOMINGUEZ","days":["M","J","S"],"p":1},
-    {"id":"9-225-1","room":"225","name":"CELEDONIO PACHECO","days":["M","J","S"],"p":2},
-    {"id":"9-225-2","room":"225","name":"MANUEL ESCOLANO","days":["M","S"],"p":2},
-    {"id":"9-221-2","room":"221","name":"MARCELO VICENTE","days":["L","X","V","D"],"p":3},
-    {"id":"9-222-1","room":"222","name":"JOSEFA GUILLEN","days":["M","J","S"],"p":3}
+    {
+      "id": "9-215-1",
+      "habitacion": "215",
+      "nombre": "BRUCE GAUNTLET",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "9-215-2",
+      "habitacion": "215",
+      "nombre": "JESUS MONTERO",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": false,
+        "cena": true
+      }
+    },
+    {
+      "id": "9-217-1",
+      "habitacion": "217",
+      "nombre": "LEONOR ESPIN",
+      "dias_ducha": ["L", "X"],
+      "prioridad": 3,
+      "dieta": "NORMAL",
+      "espesante": false,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": false,
+        "merienda": false,
+        "cena": false
+      }
+    },
+    {
+      "id": "9-217-2",
+      "habitacion": "217",
+      "nombre": "MARI PAZ MOURIÑIGO",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": false,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "9-216-2",
+      "habitacion": "216",
+      "nombre": "ANDRÉS REINA",
+      "dias_ducha": ["J", "D"],
+      "prioridad": 3,
+      "dieta": "BLANDA",
+      "espesante": true,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": false
+      }
+    },
+    {
+      "id": "9-218-2",
+      "habitacion": "218",
+      "nombre": "EMILIANO RUIZ",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "NORMAL",
+      "espesante": false,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "9-219-1",
+      "habitacion": "219",
+      "nombre": "VICENTE ALBADALEJO",
+      "dias_ducha": ["L", "X", "V"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "9-221-1",
+      "habitacion": "221",
+      "nombre": "ESTEBAN VERDÚ",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 1,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": false,
+        "cena": true
+      }
+    },
+    {
+      "id": "9-223-1",
+      "habitacion": "223",
+      "nombre": "M. CARMEN DOMINGUEZ",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 1,
+      "dieta": "NORMAL",
+      "espesante": true,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": false,
+        "merienda": false,
+        "cena": false
+      }
+    },
+    {
+      "id": "9-225-1",
+      "habitacion": "225",
+      "nombre": "CELEDONIO PACHECO",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 2,
+      "dieta": "TURMIX",
+      "espesante": false,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": false,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "9-225-2",
+      "habitacion": "225",
+      "nombre": "MANUEL ESCOLANO",
+      "dias_ducha": ["M", "S"],
+      "prioridad": 2,
+      "dieta": "BLANDA",
+      "espesante": false,
+      "area_convivencia": "UCC",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": false
+      }
+    },
+    {
+      "id": "9-221-2",
+      "habitacion": "221",
+      "nombre": "MARCELO VICENTE",
+      "dias_ducha": ["L", "X", "V", "D"],
+      "prioridad": 3,
+      "dieta": "NORMAL",
+      "espesante": false,
+      "area_convivencia": "PASILLO",
+      "disponibilidad_comidas": {
+        "desayuno": false,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    },
+    {
+      "id": "9-222-1",
+      "habitacion": "222",
+      "nombre": "JOSEFA GUILLEN",
+      "dias_ducha": ["M", "J", "S"],
+      "prioridad": 3,
+      "dieta": "TURMIX",
+      "espesante": true,
+      "area_convivencia": "UAD",
+      "disponibilidad_comidas": {
+        "desayuno": true,
+        "comida": true,
+        "merienda": true,
+        "cena": true
+      }
+    }
   ]
 }

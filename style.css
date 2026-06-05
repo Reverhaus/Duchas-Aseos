@@ -1,67 +1,69 @@
-/* Estilos generales */
+/* Estilos generales corporativos planos */
 body {
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Roboto', sans-serif;
     -webkit-tap-highlight-color: transparent;
-    background: #fafaf8;
+    background: #f0f4f8; /* Soft corporate gray-blue */
+    color: #334155;
 }
 
 :root {
-    --primary: #bdc800;
-    --primary-dark: #9db000;
-    --secondary: #235b4e;
+    --primary: #bdc800; /* Lime green */
+    --primary-dark: #a3ad00;
+    --secondary: #235b4e; /* Teal */
     --secondary-light: #3d7a6b;
-    --accent: #e3a352;
+    --accent: #e3a352; /* Orange */
     --accent-dark: #c98d3a;
-    --gray: #cccccc;
-    --gray-dark: #999999;
-    --border-color: #3d7a6b;
-    --border-width: 2px;
-    --shadow-offset: 3px;
+    --gray: #e2e8f0; /* Soft border/bg */
+    --gray-dark: #64748b; /* Slate text */
+    --border-color: #cbd5e1; /* Soft border */
+    --border-width: 1px;
 }
 
-* {
-    border-radius: 0 !important;
-}
+/* Remove the global border-radius: 0 !important */
 
 .brutal-border {
     border: var(--border-width) solid var(--border-color);
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--gray);
-    transition: all 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border-radius: 12px;
+    transition: all 0.2s ease-in-out;
+    background: white;
 }
 
 .brutal-btn {
-    border: var(--border-width) solid var(--border-color);
-    box-shadow: 2px 2px 0 var(--gray);
-    transition: all 0.1s;
-    font-weight: 700;
+    border: var(--border-width) solid transparent;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    transition: all 0.15s ease;
+    font-weight: 600;
     text-transform: uppercase;
-    font-size: 10px;
+    font-size: 11px;
     cursor: pointer;
+    letter-spacing: 0.5px;
 }
 
 .brutal-btn:active {
-    transform: translate(1px, 1px);
-    box-shadow: 1px 1px 0 var(--gray);
+    transform: scale(0.97);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 .priority-top {
     border-left: 4px solid var(--accent);
-    background: rgba(227, 163, 82, 0.5);
+    background: #fffdfa;
 }
 
 .priority-meal {
     border-left: 4px solid var(--primary);
-    background: rgba(189, 200, 0, 0.5);
+    background: #fdfef7;
 }
 
 .priority-normal {
-    border-left: 4px solid var(--gray);
+    border-left: 4px solid transparent;
     background: white;
 }
 
 .completed-card {
-    opacity: 0.35;
-    filter: grayscale(80%);
+    opacity: 0.6;
+    filter: grayscale(60%);
 }
 
 .completed-card .poo-btn-active {
@@ -115,6 +117,7 @@ body {
     position: fixed;
     width: 6px;
     height: 6px;
+    border-radius: 50%;
     animation: particleFade 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     pointer-events: none;
     z-index: 1000;
@@ -141,6 +144,7 @@ body {
     }
     50% {
         background-color: rgba(189, 200, 0, 0.15);
+        border-radius: 12px;
     }
 }
 
@@ -152,10 +156,11 @@ body {
     color: white;
     font-size: 9px;
     font-weight: 700;
-    padding: 2px 5px;
-    border: 1px solid var(--border-color);
-    box-shadow: 1px 1px 0 var(--gray);
+    padding: 3px 6px;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     z-index: 10;
+    border-radius: 12px;
 }
 
 .priority-badge {
@@ -172,35 +177,38 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--border-color);
-    font-weight: 700;
-    font-size: 9px;
+    border: none;
+    font-weight: 600;
+    font-size: 10px;
     text-transform: uppercase;
     flex-shrink: 0;
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Roboto', sans-serif;
+    border-radius: 50%;
 }
 
 .day-has-shower-today {
     background: var(--accent);
     color: white;
+    box-shadow: 0 2px 4px rgba(227, 163, 82, 0.3);
 }
 
 .day-has-shower-other {
-    background: var(--secondary);
+    background: var(--secondary-light);
     color: white;
 }
 
 .day-no-shower {
     background: var(--gray);
-    color: #999;
+    color: var(--gray-dark);
 }
 
 .room-badge {
-    background: var(--primary);
+    background: var(--secondary);
     color: white;
     font-weight: 700;
     flex-shrink: 0;
-    border: 1px solid var(--border-color);
+    border: none;
+    border-radius: 8px;
 }
 
 .emoji-icon {
@@ -210,21 +218,23 @@ body {
 }
 
 .poo-btn {
-    background: #f8f8f8;
+    background: #f8fafc;
     border: 1px solid var(--border-color);
-    box-shadow: 1px 1px 0 var(--gray);
-    transition: all 0.1s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border-radius: 50%;
+    transition: all 0.2s;
     cursor: pointer;
 }
 
 .poo-btn:active {
-    transform: translate(1px, 1px);
-    box-shadow: 0 0 0 var(--gray);
+    transform: scale(0.9);
 }
 
 .poo-btn-active {
     background: var(--primary) !important;
+    border-color: var(--primary) !important;
     color: white;
+    box-shadow: 0 2px 4px rgba(189, 200, 0, 0.3);
 }
 
 .btn-primary {
@@ -244,13 +254,13 @@ body {
 
 .btn-gray {
     background: var(--gray);
-    color: black;
+    color: var(--gray-dark);
 }
 
 .collapsible-content {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s;
+    transition: max-height 0.3s ease-in-out;
 }
 
 .collapsible-content.open {
@@ -263,8 +273,9 @@ body {
     left: 0;
     height: 100%;
     background: var(--primary);
-    transition: width 0.5s;
+    transition: width 0.5s ease-out;
     z-index: 1;
+    border-radius: 0 8px 8px 0;
 }
 
 .header-compact {
@@ -282,18 +293,103 @@ body {
 }
 
 .header-toggle-btn {
-    padding: 5px 7px;
-    font-size: 9px;
+    padding: 6px 8px;
+    font-size: 10px;
     white-space: nowrap;
 }
 
 .clear-data-btn {
-    background: #e76f51;
+    background: #ef4444;
     color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clear-data-btn:active {
+    transform: scale(0.95);
+}
+
+/* Custom Slider */
+.custom-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: var(--gray);
+    border-radius: 3px;
+    outline: none;
+    border: none;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+.custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--secondary);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.custom-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--secondary);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Alimentación Diet Counters */
+.diet-counters {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 12px 10px;
+    gap: 10px;
+}
+.diet-count {
+    flex: 1;
+    background: white;
+    color: var(--gray-dark);
+    padding: 10px 4px;
+    border-radius: 12px;
+    text-align: center;
     border: 1px solid var(--border-color);
-    padding: 5px 7px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.diet-emoji {
+    font-size: 24px;
+    margin-bottom: 2px;
+}
+.diet-label {
     font-size: 9px;
     font-weight: 700;
-    box-shadow: 1px 1px 0 var(--gray);
-    cursor: pointer;
+    text-transform: uppercase;
+    color: var(--gray-dark);
+    margin-bottom: 2px;
+}
+.diet-number {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.menu-display {
+    background: rgba(189, 200, 0, 0.05);
+    padding: 10px;
+    font-size: 12px;
+    border-left: 4px solid var(--primary);
+    border-radius: 4px;
 }
