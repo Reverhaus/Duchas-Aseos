@@ -33,12 +33,13 @@
             </div>
         </div>
         
-        <div id="meal-menu" class="border-t" style="border-color: var(--border-color);">
-            <div class="flex overflow-x-auto no-scrollbar gap-2 p-2" style="background: var(--gray);">
-                <button onclick="setMeal('desayuno')" id="btn-desayuno" class="flex-1 py-2 px-3 brutal-btn btn-accent text-[10px] uppercase">Desayuno</button>
-                <button onclick="setMeal('comida')" id="btn-comida" class="flex-1 py-2 px-3 brutal-btn bg-white text-[10px] uppercase" style="color: var(--border-color);">Comida</button>
-                <button onclick="setMeal('merienda')" id="btn-merienda" class="flex-1 py-2 px-3 brutal-btn bg-white text-[10px] uppercase" style="color: var(--border-color);">Merienda</button>
-                <button onclick="setMeal('cena')" id="btn-cena" class="flex-1 py-2 px-3 brutal-btn bg-white text-[10px] uppercase" style="color: var(--border-color);">Cena</button>
+        <div id="meal-menu" class="border-t bg-gray-100 p-3" style="border-color: var(--border-color);">
+            <input type="range" min="0" max="3" value="0" class="w-full custom-slider" id="meal-slider" oninput="handleSliderChange(this.value)">
+            <div class="flex justify-between text-[9px] font-bold mt-2 uppercase text-gray-400">
+                <span id="lbl-0" style="color: var(--primary);">Desayuno</span>
+                <span id="lbl-1">Comida</span>
+                <span id="lbl-2">Merienda</span>
+                <span id="lbl-3">Cena</span>
             </div>
         </div>
     </header>
@@ -52,22 +53,32 @@
     </main>
 
     <footer class="fixed bottom-0 w-full z-20" style="background: var(--secondary); border-top: var(--border-width) solid var(--border-color);">
-        <div class="diet-counters">
-            <div class="diet-count">
-                <span class="diet-emoji">🍗</span>
-                <span class="diet-label">Normal</span>
-                <span id="count-normal" class="diet-number">0</span>
+        <div class="diet-counters flex justify-around p-2 gap-2">
+            
+            <div class="diet-count flex-1 bg-white p-2 rounded-lg brutal-border flex items-center justify-center gap-2">
+                <div class="flex flex-col items-center">
+                    <span class="text-3xl leading-none">🍗</span>
+                    <span class="text-[9px] font-black uppercase text-gray-500 mt-1">Normal</span>
+                </div>
+                <span id="count-normal" class="text-2xl font-black" style="color: var(--primary);">0</span>
             </div>
-            <div class="diet-count">
-                <span class="diet-emoji">🍞</span>
-                <span class="diet-label">Blanda</span>
-                <span id="count-blanda" class="diet-number">0</span>
+
+            <div class="diet-count flex-1 bg-white p-2 rounded-lg brutal-border flex items-center justify-center gap-2">
+                <div class="flex flex-col items-center">
+                    <span class="text-3xl leading-none">🍞</span>
+                    <span class="text-[9px] font-black uppercase text-gray-500 mt-1">Blanda</span>
+                </div>
+                <span id="count-blanda" class="text-2xl font-black" style="color: var(--primary);">0</span>
             </div>
-            <div class="diet-count">
-                <span class="diet-emoji">🥣</span>
-                <span class="diet-label">Turmix</span>
-                <span id="count-turmix" class="diet-number">0</span>
+
+            <div class="diet-count flex-1 bg-white p-2 rounded-lg brutal-border flex items-center justify-center gap-2">
+                <div class="flex flex-col items-center">
+                    <span class="text-3xl leading-none">🥣</span>
+                    <span class="text-[9px] font-black uppercase text-gray-500 mt-1">Turmix</span>
+                </div>
+                <span id="count-turmix" class="text-2xl font-black" style="color: var(--primary);">0</span>
             </div>
+
         </div>
     </footer>
 
@@ -123,18 +134,20 @@
             render();
         }
 
-        function setMeal(meal) {
-            currentMeal = meal;
-            ['desayuno','comida','merienda','cena'].forEach(m => {
-                const btn = $('btn-'+m);
-                if (m === meal) {
-                    btn.className = 'flex-1 py-2 px-3 brutal-btn btn-accent text-[10px] uppercase';
-                    btn.style.color = 'white';
+        function handleSliderChange(val) {
+            const meals = ['desayuno', 'comida', 'merienda', 'cena'];
+            currentMeal = meals[parseInt(val)];
+            
+            for (let i = 0; i <= 3; i++) {
+                const lbl = $('lbl-' + i);
+                if (i === parseInt(val)) {
+                    lbl.style.color = 'var(--primary)';
+                    lbl.style.transform = 'scale(1.2)';
                 } else {
-                    btn.className = 'flex-1 py-2 px-3 brutal-btn bg-white text-[10px] uppercase';
-                    btn.style.color = 'var(--border-color)';
+                    lbl.style.color = '';
+                    lbl.style.transform = 'scale(1)';
                 }
-            });
+            }
             render();
         }
 

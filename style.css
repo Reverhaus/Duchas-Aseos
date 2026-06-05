@@ -493,6 +493,33 @@ body {
     cursor: pointer;
 }
 
+/* Custom Slider */
+.custom-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 10px;
+    background: white;
+    outline: none;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: 2px 2px 0 var(--gray);
+}
+.custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    cursor: pointer;
+    border: var(--border-width) solid var(--border-color);
+}
+.custom-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    cursor: pointer;
+    border: var(--border-width) solid var(--border-color);
+}
+
 /* Alimentación Diet Counters */
 .diet-counters {
     display: flex;
